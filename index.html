@@ -94,7 +94,7 @@ h1,h2,h3{font-family:var(--f-d);line-height:1.08;letter-spacing:-.015em;text-wra
 
 /* ===== ИСТОРИЯ ===== */
 #story{position:relative;height:1000vh}
-.stage{position:sticky;top:0;height:100vh;height:100svh;overflow:hidden;
+.stage{position:sticky;top:0;height:100vh;height:100lvh;overflow:hidden;
   background:radial-gradient(ellipse 80% 60% at 50% 62%,var(--stage-1) 0%,var(--stage-2) 55%,var(--stage-3) 100%);transition:background .6s}
 #gl{position:absolute;inset:0;width:100%;height:100%;display:block;touch-action:pan-y;outline:none}
 .vignette{position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse at center,transparent 55%,var(--vig) 100%)}
@@ -130,7 +130,7 @@ h1,h2,h3{font-family:var(--f-d);line-height:1.08;letter-spacing:-.015em;text-wra
 .paints button{width:30px;height:30px;border-radius:50%;border:2px solid var(--line);box-shadow:inset 0 0 0 3px var(--bg);transition:transform .2s,border-color .2s}
 .paints button.on{border-color:var(--accent-text);transform:scale(1.12)}
 @media(max-width:700px){
-  .caps{left:12px;right:12px;width:auto;bottom:calc(128px + env(safe-area-inset-bottom,0px))}
+  .caps{left:12px;right:12px;width:auto;bottom:calc(128px + var(--hid,0px) + env(safe-area-inset-bottom,0px))}
   .cap{padding:16px 18px 18px;border-radius:22px;background:var(--glass);backdrop-filter:blur(14px);border:1px solid var(--glass-line);opacity:0;visibility:hidden;transition:opacity .5s,visibility .5s}
   .cap.on{opacity:1;visibility:visible}
   .cap h2,.cap h1{font-size:24px;margin:10px 0 8px}
@@ -184,7 +184,7 @@ h1,h2,h3{font-family:var(--f-d);line-height:1.08;letter-spacing:-.015em;text-wra
 .cap p.m{display:none}
 @media(max-width:700px){.cap p.d{display:none}.cap p.m{display:block}}
 @media(max-width:700px){.cap[data-c="0"] .paints{display:none}}
-@media(max-width:700px){.chipbar{left:12px;right:12px;max-width:none;bottom:calc(74px + env(safe-area-inset-bottom,0px))}.chip{font-size:13px}}
+@media(max-width:700px){.chipbar{left:12px;right:12px;max-width:none;bottom:calc(74px + var(--hid,0px) + env(safe-area-inset-bottom,0px))}.chip{font-size:13px}}
 
 /* подсказка под курсором */
 .tip{position:absolute;left:0;top:0;z-index:8;pointer-events:none;padding:7px 11px;border-radius:10px;background:var(--glass);border:1px solid var(--accent-line);font-size:13px;font-weight:700;white-space:nowrap;opacity:0;transition:opacity .2s}
@@ -212,7 +212,7 @@ h1,h2,h3{font-family:var(--f-d);line-height:1.08;letter-spacing:-.015em;text-wra
 .sheet .acts{display:flex;gap:8px;flex:0 0 auto;margin-left:auto}
 .sheet .acts .btn-ghost{padding:13px 15px}
 .sheet .x{width:44px;height:44px;top:8px;right:8px}
-@media(max-width:700px){.sheet{top:auto;bottom:calc(130px + env(safe-area-inset-bottom,0px));right:12px;left:12px;width:auto;transform:translateY(24px);border-radius:22px;max-height:calc(100svh - 210px - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px));overflow-y:auto}.sheet.on{transform:none}}
+@media(max-width:700px){.sheet{top:auto;bottom:calc(130px + var(--hid,0px) + env(safe-area-inset-bottom,0px));right:12px;left:12px;width:auto;transform:translateY(24px);border-radius:22px;max-height:calc(100svh - 210px - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px));overflow-y:auto}.sheet.on{transform:none}}
 
 .toast{position:absolute;left:50%;top:calc(84px + env(safe-area-inset-top,0px));z-index:21;transform:translate(-50%,-20px);opacity:0;padding:12px 18px;border-radius:14px;background:var(--glass);border:1px solid var(--line);font-size:14px;font-weight:600;width:max-content;max-width:calc(100% - 32px);text-align:center;transition:.4s var(--ease);pointer-events:none}
 .toast.on{opacity:1;transform:translate(-50%,0)}
@@ -649,7 +649,7 @@ const $=s=>document.querySelector(s);
    Координаты точек — в метрах модели (сняты лучами по самой модели). При замене машины меняется только этот блок. */
 const MODEL = {
   tiers:{ hd:'models/w212/hd/car.json', lite:'models/w212/lite/car.json' },   // сжаты: meshopt + WebP
-  size:{ hd:'5,4 МБ', lite:'3,1 МБ' },
+  size:{ hd:'5,4 МБ', lite:'4,2 МБ' },
   credit:'3D-модель: «Mercedes E-Class W212», Peter_D (Sketchfab), CC BY 4.0',
   forward:[0,0,-1],
   steering:'SteeringWheel', hood:'Hood', door:'DoorFL', openClip:'model_open_all',
@@ -686,6 +686,7 @@ const chapterAt=p=>{ let c=0; CHAPTERS.forEach((ch,i)=>{ if(p>=ch.from-1e-4) c=i
 function gpuName(){ try{ const g=document.createElement('canvas').getContext('webgl'); const e=g&&g.getExtension('WEBGL_debug_renderer_info'); return e?String(g.getParameter(e.UNMASKED_RENDERER_WEBGL)):''; }catch(e){ return ''; } }
 function pickTier(){
   const q=new URLSearchParams(location.search).get('q'); if(q==='hd'||q==='lite') return q;
+  if(/iPhone|iPad|iPod/.test(navigator.userAgent)||(navigator.maxTouchPoints>1&&/Macintosh/.test(navigator.userAgent))||/Apple GPU/.test(gpuName())) return 'hd';
   const mobile=matchMedia('(pointer:coarse)').matches&&Math.min(screen.width,screen.height)<=820;
   const mem=navigator.deviceMemory||(mobile?4:8), cores=navigator.hardwareConcurrency||(mobile?4:8), c=navigator.connection;   // неизвестный телефон — осторожно, Lite
   if(c&&(c.saveData||/(^|-)2g|3g/.test(c.effectiveType||''))) return 'lite';
@@ -703,7 +704,7 @@ const canvas=$('#gl');
 let renderer;
 try{ renderer=new THREE.WebGLRenderer({canvas,antialias:TIER==='hd',alpha:true,powerPreference:'high-performance'}); }
 catch(e){ fail('Браузер не показывает 3D — листайте ниже, там цены и запись'); throw e; }
-let PR_MAX=TIER==='hd'?Math.min(devicePixelRatio,2):Math.min(devicePixelRatio,1.25), prScale=1;
+let PR_MAX=TIER==='hd'?Math.min(devicePixelRatio,2):Math.min(devicePixelRatio,1.5), prScale=1;
 renderer.setPixelRatio(PR_MAX);
 renderer.toneMapping=THREE.ACESFilmicToneMapping;
 const scene=new THREE.Scene();
@@ -969,7 +970,8 @@ function applyLook(r){
 function setPose(r){
   const asp=camera.aspect, fitK=asp<1.25?THREE.MathUtils.clamp(1.05/asp,1,2.1):1, k=1+(fitK-1)*r.fit;   // телефон: машина крупнее
   /* телефон: сцена в свободной верхней части (снизу подпись и чипы); планшет/квадрат — чуть выше; компьютер — правее подписи */
-  if(asp<0.8) camera.setViewOffset(VW,VH,0,VH*(0.17+0.05*Math.max(0,1-p/0.09)),VW,VH);   // на первом экране карточка выше — машину поднимаем else if(asp<1.25) camera.setViewOffset(VW,VH,0,VH*0.14*r.fit,VW,VH); else camera.setViewOffset(VW,VH,-VW*(0.24*r.fit+0.12*Math.max(0,1-p/0.09)),0,VW,VH);   // на первом экране машина правее заголовка
+  if(asp<0.8) camera.setViewOffset(VW,VH,0,VH*(0.17+0.01*Math.max(0,1-p/0.09))+HID/2,VW,VH);   // на первом экране карточка выше — машину поднимаем; HID — часть сцены под панелью браузера
+  else if(asp<1.25) camera.setViewOffset(VW,VH,0,VH*0.14*r.fit,VW,VH); else camera.setViewOffset(VW,VH,-VW*(0.24*r.fit+0.12*Math.max(0,1-p/0.09)),0,VW,VH);   // на первом экране машина правее заголовка
   camera.position.copy(r.tgt).add(tmp.copy(r.pos).sub(r.tgt).multiplyScalar(k));
   camera.lookAt(r.tgt); camera.updateMatrixWorld(true);
   const fov=BASE_FOV+(1-r.fit)*22; if(Math.abs(camera.fov-fov)>0.01){ camera.fov=fov; camera.updateProjectionMatrix(); }
@@ -986,7 +988,7 @@ function frame(){
   pTarget=devP??THREE.MathUtils.clamp((scrollY-st.offsetTop)/max,0,1);
   $('#bar').style.transform=`scaleX(${pTarget})`;
   $('#shint').style.opacity=pTarget>0.02?0:1;
-  document.body.classList.toggle('dock-on',pTarget>0.07||scrollY>st.offsetTop+max);
+  const dk=pTarget>0.07||scrollY>st.offsetTop+max; if(document.body.classList.contains('dock-on')!==dk){ document.body.classList.toggle('dock-on',dk); layoutCaps(); }
   const dockOn=document.body.matches('.dock-on:not(.book-on):not(.sheet-open)'); if($('#dock').inert===dockOn) $('#dock').inert=!dockOn;
   const dt=Math.min(clock.getDelta(),0.3), time=clock.elapsedTime;
   if(!visible||!ready) return;
@@ -1097,7 +1099,7 @@ function updateSpots(ch,force){
 function layoutCaps(){   // подпись главы — над рядом чипов (на компьютере чипы бывают в две строки)
   const cb=$('#chipbar'), caps=$('#caps'), on=cb.classList.contains('on');
   if(innerWidth>700) caps.style.bottom=on?(cb.offsetHeight+36+18)+'px':'';
-  else caps.style.bottom=on?'':'calc(76px + env(safe-area-inset-bottom,0px))';
+  else caps.style.bottom=on?'':`calc(${document.body.classList.contains('dock-on')?76:16}px + var(--hid,0px) + env(safe-area-inset-bottom,0px))`;   // без плашки телефона — карточка у самого низа
 }
 /* если устройство не тянет — снижаем чёткость, пока не станет плавно */
 function perfWatch(dt){
@@ -1205,8 +1207,10 @@ addEventListener('pointerup',e=>{
 });
 
 /* ---------- размер ---------- */
-function resize(){ const st=$('#stage'); VW=st.clientWidth; VH=st.clientHeight; renderer.setSize(VW,VH,false); camera.aspect=VW/VH; BASE_FOV=camera.aspect<1?40:32; camera.fov=BASE_FOV; camera.updateProjectionMatrix(); dirty=true; layoutCaps(); }
-addEventListener('resize',resize); resize();
+let HID=0;
+function fitHidden(){ const h=Math.max(0,Math.min(160,$('#stage').clientHeight-innerHeight)); if(h!==HID){ HID=h; document.documentElement.style.setProperty('--hid',h+'px'); dirty=true; } }
+function resize(){ fitHidden(); const st=$('#stage'); VW=st.clientWidth; VH=st.clientHeight; renderer.setSize(VW,VH,false); camera.aspect=VW/VH; BASE_FOV=camera.aspect<1?40:32; camera.fov=BASE_FOV; camera.updateProjectionMatrix(); dirty=true; layoutCaps(); }
+addEventListener('resize',resize); visualViewport?.addEventListener('resize',fitHidden); resize();
 requestAnimationFrame(frame);
 /* ?dev — служебные снимки для проверки: __dev.snap(p,{hood,inside,mode,az,pol}) → картинка кадра */
 let devP=null;
