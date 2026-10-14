@@ -971,7 +971,7 @@ function setPose(r){
   const asp=camera.aspect, fitK=asp<1.25?THREE.MathUtils.clamp(1.05/asp,1,2.1):1, k=1+(fitK-1)*r.fit;   // телефон: машина крупнее
   /* телефон: сцена в свободной верхней части (снизу подпись и чипы); планшет/квадрат — чуть выше; компьютер — правее подписи */
   if(asp<0.8) camera.setViewOffset(VW,VH,0,VH*(0.17+0.01*Math.max(0,1-p/0.09))+HID/2,VW,VH);   // на первом экране карточка выше — машину поднимаем; HID — часть сцены под панелью браузера
-  else if(asp<1.25) camera.setViewOffset(VW,VH,0,VH*0.14*r.fit,VW,VH); else camera.setViewOffset(VW,VH,-VW*(0.24*r.fit+0.12*Math.max(0,1-p/0.09)),0,VW,VH);   // на первом экране машина правее заголовка
+  else camera.clearViewOffset();   // компьютер/планшет: машина по центру сцены — так Артём одобрил
   camera.position.copy(r.tgt).add(tmp.copy(r.pos).sub(r.tgt).multiplyScalar(k));
   camera.lookAt(r.tgt); camera.updateMatrixWorld(true);
   const fov=BASE_FOV+(1-r.fit)*22; if(Math.abs(camera.fov-fov)>0.01){ camera.fov=fov; camera.updateProjectionMatrix(); }
