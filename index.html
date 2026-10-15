@@ -783,7 +783,7 @@ const MODEL = {
   paints:[['Обсидиан','#15171b'],['Серебро','#aeb4bb'],['Белый','#e6e9ec'],['Синий','#1d3557']],
   shell:n=>/^mesh_(Body|Door\w\w|Hood|Trunk)_mat_(body|plastic|chrome|rubber)_0$/.test(n),
   pt:{
-    engine:[-0.06,0.86,-1.58], gen:[-0.27,0.80,-1.66], fuse:[-0.64,0.85,-1.43], rad:[-0.12,0.78,-1.95],
+    engine:[-0.06,0.86,-1.58], gen:[-0.40,0.79,-1.80], fuse:[-0.64,0.85,-1.43], rad:[-0.12,0.78,-1.95], ecu:[0.55,0.84,-1.45], fender:[-0.96,0.50,-0.72], towbar:[0,0.27,2.50], airbagPt:[-0.36,0.97,-0.42], taillightR:[0.66,0.88,2.37], headlightR:[0.68,0.70,-2.03],
     headlight:[-0.68,0.70,-2.03], grille:[0,0.60,-2.31],
     mirror:[-1.04,0.99,-0.55], handle:[-0.92,0.85,0.10], window:[-0.77,1.14,-0.08], doorOut:[-0.95,0.70,-0.30],
     plate:[0,0.62,2.49], bumper:[-0.55,0.45,2.42], taillight:[-0.66,0.88,2.37],
@@ -793,8 +793,8 @@ const MODEL = {
   },
 };
 /* зоны нажатия: ближайшая точка к месту клика */
-const ZONES_IN=[['mirrorIn','Зеркало: видеорегистратор','dvr'],['screen','Экран магнитолы','radio'],['gauges','Приборная панель','diag'],['wheelHub','Руль','diag'],['vents','Дефлекторы','climate'],['climate','Блок климата','climate']];
-const ZONES_BAY=[['engine','Двигатель','diag'],['gen','Генератор, стартер','power'],['fuse','Блок предохранителей','power'],['rad','Радиатор кондиционера','ac']];
+const ZONES_IN=[['mirrorIn','Зеркало: видеорегистратор','dvr'],['screen','Экран магнитолы','radio'],['gauges','Приборная панель','diag'],['wheelHub','Руль: подушка безопасности','airbag'],['vents','Дефлекторы','climate'],['climate','Блок климата','climate']];
+const ZONES_BAY=[['engine','Двигатель','diag'],['gen','Генератор, стартер','power'],['fuse','Блок предохранителей','electrics'],['rad','Радиатор кондиционера','ac'],['ecu','Блок управления двигателем','chip']];
 const MSG={
   wheel:'Колёса и тормоза — не наш профиль. Мы по электрике и оборудованию.',
   seat:'Сиденья не наш профиль. Нажмите на экран, приборку или дверь.',
@@ -997,22 +997,28 @@ function onLoad(g){
     {ch:[1],free:null,  k:'engine', svc:'diag', t:'Нашли ошибку', bad:1, inner:1},
     {ch:[2],free:'hood',k:'engine', svc:'diag', t:'Двигатель: ошибки', ft:'Двигатель', bad:1, inner:1},
     {ch:[2],free:'hood',k:'gen', svc:'power', t:'Генератор, стартер', ft:'Генератор', inner:1},
-    {ch:[2],free:'hood',k:'fuse', svc:'power', t:'Проводка, предохранители', ft:'Проводка', inner:1},
+    {ch:[2],free:'hood',k:'fuse', svc:'electrics', t:'Проводка, предохранители', ft:'Проводка', inner:1},
     {ch:[2],free:'hood',k:'rad', svc:'ac', t:'Радиатор кондиционера', ft:'Кондиционер', inner:1},
+    {ch:[2],free:'hood',k:'ecu', svc:'chip', t:'Блок управления: чип-тюнинг', ft:'Чип-тюнинг', inner:1},
     {ch:[], free:'ext', k:'headlight', svc:'light', t:'Фары и линзы', ft:'Фары'},
+    {ch:[], free:'ext', k:'headlightR', svc:'light', t:'Фары и линзы', ft:'Фары'},
+    {ch:[3],free:'ext', k:'fender', svc:'bron', t:'Бронирование плёнкой', ft:'Плёнка'},
     {ch:[], free:'ext', k:'hoodTop', act:'hood', t:'Открыть капот', node:hood},
     {ch:[3],free:null , k:'handle', svc:'alarm', t:'Сигнализация, автозапуск', ft:'Сигнализация', node:door},
     {ch:[3],free:null , k:'mirror', svc:'cam360', t:'Камеры 360°', ft:'Камеры', node:door},
-    {ch:[3],free:null , k:'window', svc:'tint', t:'Тонировка', node:door},
+    {ch:[3],free:'ext', k:'window', svc:'tint', t:'Тонировка', node:door},
     {ch:[], free:'ext', k:'doorOut', act:'door', t:'Заглянуть в салон', ft:'В салон', node:door},
     {ch:[4],free:'ext', k:'plate', svc:'rear', t:'Камера заднего вида', ft:'Камера'},
-    {ch:[4],free:null , k:'bumper', svc:'rear', t:'Парктроники', ft:'Парктроники'},
-    {ch:[4],free:null , k:'taillight', svc:'light', t:'Фонари', ft:'Фонари'},
+    {ch:[4],free:'ext', k:'bumper', svc:'rear', t:'Парктроники', ft:'Парктроники'},
+    {ch:[4],free:'ext', k:'taillight', svc:'light', t:'Фонари', ft:'Фонари'},
+    {ch:[], free:'ext', k:'taillightR', svc:'light', t:'Фонари', ft:'Фонари'},
+    {ch:[4],free:'ext', k:'towbar', svc:'towbar', t:'Фаркоп', ft:'Фаркоп'},
     {ch:[5],free:'inside',k:'screen', svc:'radio', t:'Магнитола', inner:1},
     {ch:[5],free:'inside',k:'gauges', svc:'diag', t:'Ошибка на приборке', bad:1, inner:1},
     {ch:[5],free:'inside',k:'vents', svc:'climate', t:'Кондиционер и печка', ft:'Климат', inner:1},
     {ch:[5],free:'inside',k:'speaker', svc:'audio', t:'Динамики, шумоизоляция', ft:'Звук', inner:1, node:doorR},
     {ch:[5],free:'inside',k:'mirrorIn', svc:'dvr', t:'Видеорегистратор', ft:'Регистратор', inner:1},
+    {ch:[5],free:'inside',k:'airbagPt', svc:'airbag', t:'Подушка безопасности', ft:'Airbag', inner:1},
   ];
   const carCenter=P(0,0,Hh*0.45);
   SPOTS.forEach(sp=>{
@@ -1025,7 +1031,7 @@ function onLoad(g){
 
   /* зоны кликов в координатах сцены */
   C.zIn=ZONES_IN.map(([k,n,s])=>[R(k),n,s]); C.zBay=ZONES_BAY.map(([k,n,s])=>[R(k),n,s]);
-  C.mirror=R('mirror'); C.handle=R('handle'); C.plate=R('plate'); C.grille=R('grille'); C.speaker=R('speaker');
+  C.mirror=R('mirror'); C.handle=R('handle'); C.plate=R('plate'); C.grille=R('grille'); C.speaker=R('speaker'); C.fender=R('fender'); C.towbar=R('towbar');
 
   buildRail(); buildPaints(MODEL.paintStart??1); applyMode(); resize(); ready=true; dirty=true;
   setTimeout(()=>$('#loader').classList.add('gone'),250);
@@ -1038,7 +1044,7 @@ function resolveHit(m,pointWorld){
   const n=m.o.name, chain=m.chain;
   const pt=car.worldToLocal(pointWorld.clone());                   // в координатах сцены без поворота машины
   const u=pt.dot(C.fwd);
-  if(/Wheel|Brake|tires|wheels/.test(chain)) return ['Колесо','msg',MSG.wheel,null];
+  if(/Wheel|Brake|tires|wheels/.test(chain)&&!/SteeringWheel/.test(chain)) return ['Колесо','msg',MSG.wheel,null];   // руль — не колесо
   if(/Pedal/.test(chain)) return ['Педали','msg',MSG.seat,null];
   if(/inside_gauges|SteeringWheel|Gauge_/.test(chain)||(/Body_mat_inside_panel/.test(n))){
     const z=nearest(C.zIn,pt,0.3); return z?[z[1],'svc',z[2],z[0]]:['Салон','msg',MSG.seat,null]; }
@@ -1053,7 +1059,9 @@ function resolveHit(m,pointWorld){
   if(/^mesh_Door/.test(n)) return ['Дверь','msg','Открывается водительская дверь — нажмите на неё.',null];
   if(/Trunk/.test(n)) return pt.distanceTo(C.plate)<0.35?['Номер и камера','svc','rear',C.plate]:['Багажник','msg','Камера заднего вида — над номером, нажмите на номер.',null];
   if(/Body_mat_(plastic|chrome)/.test(n)&&pt.distanceTo(C.grille)<0.2) return ['Решётка радиатора','svc','ac',C.grille];   // только сама решётка
+  if(pt.distanceTo(C.towbar)<0.25) return ['Фаркоп','svc','towbar',C.towbar];
   if(Math.abs(u)>C.L*0.5-0.45&&pt.y<0.62) return [u>0?'Передний бампер':'Задний бампер','svc','rear',pt];
+  if(pt.distanceTo(C.fender)<0.3) return ['Крыло','svc','bron',pt];   // кузов у фары — бронирование плёнкой
   return ['Кузов','msg',MSG.body,null];
 }
 
@@ -1115,7 +1123,7 @@ function frame(){
   pTarget=devP??THREE.MathUtils.clamp((scrollY-st.offsetTop)/max,0,1);
   $('#bar').style.transform=`scaleX(${pTarget})`;
   $('#shint').style.opacity=pTarget>0.02?0:1;
-  const dk=pTarget>0.07||scrollY>st.offsetTop+max; if(document.body.classList.contains('dock-on')!==dk){ document.body.classList.toggle('dock-on',dk); layoutCaps(); }
+  const dk=pTarget>=CHAPTERS[1].from-0.005||scrollY>st.offsetTop+max; if(document.body.classList.contains('dock-on')!==dk){ document.body.classList.toggle('dock-on',dk); layoutCaps(); }
   const dockOn=document.body.matches('.dock-on:not(.book-on):not(.sheet-open)'); if($('#dock').inert===dockOn) $('#dock').inert=!dockOn;
   const dt=Math.min(clock.getDelta(),0.3), time=clock.elapsedTime;
   if(!visible||!ready) return;
