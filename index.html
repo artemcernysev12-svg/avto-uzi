@@ -126,7 +126,6 @@ h1,h2,h3{font-family:var(--f-d);line-height:1.08;letter-spacing:-.015em;text-wra
 @keyframes swHand{0%{transform:translateY(0);opacity:0}12%{opacity:1;transform:translateY(0)}22%{transform:translateY(0) scale(.92)}70%{transform:translateY(-92px) scale(.92);opacity:1}85%,100%{transform:translateY(-100px);opacity:0}}
 @keyframes swDot{0%,14%{transform:translateY(0) scale(.4);opacity:0}22%{transform:translateY(0) scale(1);opacity:1}70%{transform:translateY(-92px) scale(1);opacity:.9}85%,100%{transform:translateY(-100px) scale(1.4);opacity:0}}
 @keyframes swTrail{0%,20%{transform:scaleY(0);opacity:0}70%{transform:scaleY(1);opacity:.7}100%{transform:scaleY(1);opacity:0}}
-@media(prefers-reduced-motion:reduce){.swipe *{animation:none!important}}
 /* режим «Рассмотреть машину»: страница стоит, машину крутят пальцем во все стороны */
 .viewbar{position:fixed;z-index:60;left:50%;bottom:calc(18px + env(safe-area-inset-bottom,0px));transform:translate(-50%,20px);display:flex;gap:8px;opacity:0;visibility:hidden;transition:.3s var(--ease)}
 .viewbar .btn{padding:15px 22px;font-size:16px;white-space:nowrap}
@@ -244,8 +243,6 @@ body.viewing .chipbar{bottom:calc(92px + var(--hid,0px) + env(safe-area-inset-bo
 @media(min-width:701px){.chipbar{flex-wrap:wrap;overflow:visible}}
 .cap p.m{display:none}
 /* компьютер с мышью — как было; телефон/планшет — свой вариант */
-@media(hover:hover) and (pointer:fine){.om{display:none!important}}
-@media (hover:none),(pointer:coarse){.od{display:none!important}}
 @media(max-width:700px){.cap p.d{display:none}.cap p.m{display:block}}
 @media(max-width:700px){.cap[data-c="0"] .paints{display:none}}
 @media(max-width:700px){.chipbar{left:12px;right:12px;max-width:none;bottom:calc(74px + var(--hid,0px) + env(safe-area-inset-bottom,0px))}.chip{font-size:13px}}
@@ -406,7 +403,8 @@ footer .wrap{display:flex;flex-wrap:wrap;gap:16px;justify-content:space-between}
 @keyframes wheel{0%{transform:translateY(0);opacity:1}80%{transform:translateY(12px);opacity:0}100%{opacity:0}}
 @keyframes draw{to{stroke-dashoffset:-120}}
 @keyframes pop{from{transform:scale(.4);opacity:0}}
-@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}.js .rv:not(.in){opacity:1;transform:none}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}.js .rv:not(.in){opacity:1;transform:none}
+  .swipe *{animation-duration:2s!important;animation-iteration-count:infinite!important}}   /* палец-подсказка двигается всегда: без движения непонятно, что делать */
 </style>
 </head>
 <body>
@@ -495,17 +493,16 @@ setTimeout(function(){ if(!window.__3d) window.no3d(); },12000);
         <button class="pill" data-open="Установка магнитолы" data-svc="radio">Магнитола — от 1 500 ₽ <span>Записаться →</span></button>
       </div>
       <div class="cap" data-c="6">
-        <span class="kick od">Ваша очередь</span><span class="kick om">Посмотрите сами</span>
-        <h2 class="od">Покрутите <em>машину</em> — изучите услуги</h2><h2 class="om">Откройте капот <em>или загляните в салон</em></h2>
-        <p class="d">Тяните машину мышью в любую сторону. Нажимайте на детали — покажем услуги. Капот и водительская дверь открываются.</p>
+        <span class="kick">Посмотрите сами</span>
+        <h2>Откройте капот <em>или загляните в салон</em></h2>
+        <p class="d">Нажмите кнопку внизу — покажем, что там проверяем. Или нажмите «Рассмотреть машину» и крутите её мышью в любую сторону.</p>
         <p class="m">Нажмите кнопку внизу: «Открыть капот» или «В салон».</p>
-        <div class="row"><button class="btn btn-main" data-open="Запись на диагностику" data-svc="diag"><span class="od">Записаться на диагностику</span><span class="om">Записаться</span></button><button class="btn btn-ghost om" id="spinBtn" type="button">Рассмотреть машину ↔</button></div>
+        <div class="row"><button class="btn btn-main" data-open="Запись на диагностику" data-svc="diag">Записаться</button><button class="btn btn-ghost" id="spinBtn" type="button">Рассмотреть машину ↔</button></div>
       </div>
     </div>
 
     <nav class="rail" id="rail" aria-label="Главы"></nav>
     <button class="btn btn-ghost exit" id="exitBtn">← Выйти из салона</button>
-    <div class="viewbar" id="viewbar"><button class="btn btn-main" id="viewExit" type="button">← Вернуться на страницу</button></div>
     <div class="sheet" id="sheet" role="region" aria-live="polite" aria-label="Услуга"></div>
     <div class="toast" id="toast" role="status"></div>
     <div class="scrollhint" id="shint"><i></i>листайте</div>
@@ -583,6 +580,8 @@ setTimeout(function(){ if(!window.__3d) window.no3d(); },12000);
     </div>
   </footer>
 </div>
+
+<div class="viewbar" id="viewbar"><button class="btn btn-main" id="viewExit" type="button">← Вернуться на страницу</button></div>
 
 <nav class="dock" id="dock" aria-label="Позвонить">
   <a href="tel:+79174944830" data-goal="click_phone"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .4 1.9.7 2.8a2 2 0 0 1-.5 2.1L8 9.9a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.8.7a2 2 0 0 1 1.7 2z"/></svg><span class="num">+7 (917) 494-48-30</span></a>
@@ -1242,12 +1241,13 @@ addEventListener('uzi-escape',hideSheet); addEventListener('uzi-form-open',hideS
 /* подсказка-жест: после первого свайпа больше не показываем */
 addEventListener('scroll',function sw(){ if(scrollY>20){ document.body.classList.add('swiped'); removeEventListener('scroll',sw); } },{passive:true});
 let freeSpin=false, viewY=0, viewK=0;
-const mouseUI=matchMedia('(hover:hover) and (pointer:fine)');   // компьютер: крутить мышью можно всегда, страницу не блокируем
-const canSpin=()=>freeSpin||mouseUI.matches;
+const canSpin=()=>freeSpin;
 const holdScroll=()=>{ if(Math.abs(scrollY-viewY)>1) scrollTo(0,viewY); };   // страница стоит, даже если браузер всё же сдвинул
 const stopScroll=e=>{ if(!e.target.closest?.('.sheet,.modal,.chipbar')) e.preventDefault(); };
 function enterView(fromHistory){
-  if(freeSpin||mouseUI.matches) return; freeSpin=true; viewY=scrollY; addEventListener('scroll',holdScroll,{passive:true});
+  if(freeSpin) return; freeSpin=true;
+  const st=$('#story'), endY=st.offsetTop+(st.offsetHeight-innerHeight)*0.97;   // сцена целиком на экране, глава «Посмотрите сами»
+  if(Math.abs(scrollY-endY)>2) scrollTo({top:endY,behavior:'instant'}); viewY=scrollY; addEventListener('scroll',holdScroll,{passive:true});
   document.documentElement.classList.add('lock'); document.body.classList.add('viewing');
   addEventListener('touchmove',stopScroll,{passive:false}); addEventListener('wheel',stopScroll,{passive:false});
   if(!fromHistory) try{ history.pushState({uziView:1},''); }catch(e){}
@@ -1264,7 +1264,7 @@ function exitView(fromHistory){
 }
 $('#spinBtn').addEventListener('click',()=>enterView(false));
 $('#viewExit').addEventListener('click',()=>exitView(false));
-addEventListener('popstate',()=>{ if(history.state?.uziView&&chapterAt(p)===FREE) enterView(true); else exitView(true); });
+addEventListener('popstate',()=>exitView(true));
 addEventListener('uzi-escape',()=>exitView(false));
 
 let toastT; function toast(t){ const el=$('#toast'); el.textContent=t; el.classList.add('on'); clearTimeout(toastT); toastT=setTimeout(()=>el.classList.remove('on'),3000); }
