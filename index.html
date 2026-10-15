@@ -92,6 +92,8 @@ h1,h2,h3{font-family:var(--f-d);line-height:1.08;letter-spacing:-.015em;text-wra
 .top .btn{padding:12px 20px;font-size:15px}
 @media(max-width:700px){.top .tel{display:none}.mode{margin-left:auto}.top .btn{padding:11px 16px;font-size:14px}.top{padding-inline:16px}}
 
+/* цвет действий (открыть капот, в салон) — синий, одинаковый в обеих темах */
+:root{--act:#3d8bff;--act-dim:rgba(61,139,255,.22);--act-line:rgba(61,139,255,.55)}
 /* меню */
 .menu{display:flex;gap:2px;margin-left:auto;padding:4px;border-radius:999px;background:var(--glass);border:1px solid var(--glass-line);backdrop-filter:blur(10px)}
 .menu a{padding:9px 15px;border-radius:999px;font-size:14px;font-weight:600;color:var(--text2);white-space:nowrap;transition:color .2s,background .2s}
@@ -241,7 +243,11 @@ body.viewing .chipbar{bottom:calc(92px + var(--hid,0px) + env(safe-area-inset-bo
 .chip{flex:0 0 auto;display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:8px 14px 8px 8px;border-radius:999px;background:var(--glass);backdrop-filter:blur(10px);border:1px solid var(--glass-line);font-weight:700;font-size:14px;white-space:nowrap;transition:border-color .2s}
 .chip i{width:26px;height:26px;border-radius:50%;display:grid;place-items:center;font:800 12px/1 var(--f-b);font-style:normal;background:var(--accent);color:var(--accent-ink)}
 .chip.bad i{background:var(--warn)}
-.chip.ghost i{background:transparent;border:1.5px solid var(--accent-text);color:var(--accent-text)}
+.chip.ghost i{background:var(--act);border:0;color:#fff}
+.chip.ghost{border-color:var(--act-line)}
+.spot.act .dot{background:var(--act);color:#fff;box-shadow:0 0 0 4px var(--act-dim),0 0 18px var(--act-dim)}
+.spot.act .dot::after{border-color:var(--act)}
+.spot.act b{border-color:var(--act-line)}
 .chip:hover,.chip.sel{border-color:var(--accent-text)}
 @media(min-width:701px){.chipbar{flex-wrap:wrap;overflow:visible}}
 .cap p.m{display:none}
@@ -606,7 +612,8 @@ const SVC = {
   alarm:  {t:"Сигнализация и автозапуск",d:"Starline, Pandora, Призрак. Запуск по времени, температуре или с телефона, штатные функции сохраняем.",li:["Подбор под авто и бюджет","Реле, замок капота, блокировки","Покажем, как пользоваться"],p:"от 5 000 ₽",pn:"с автозапуском — от 5 499 ₽"},
   cam360: {t:"Камеры и обзор 360°",d:"Камеры по кругу машины — при парковке видно всё вокруг.",li:["Камеры переднего и заднего вида","Системы кругового обзора","Подключение к штатному экрану"],p:"по запросу",pn:"камера заднего вида — от 2 000 ₽"},
   dvr:    {t:"Видеорегистратор",d:"Установим видеорегистратор: подберём под ваш автомобиль и подключим.",li:["Подбор регистратора","Установка и подключение","Проверка работы"],p:"по запросу",pn:"зависит от модели"},
-  rear:   {t:"Камера заднего вида и парктроники",d:"Парковка без звука удара. Подключаем к штатной магнитоле или к андроид-магнитоле.",li:["Камера заднего вида","Парктроники","Контроль слепых зон"],p:"от 1 500 ₽",pn:"установка камеры и парктроника"},
+  rear:   {t:"Камера заднего вида",d:"Видно, что сзади, на экране магнитолы. Подключаем к штатной или андроид-магнитоле.",li:["Камера заднего вида","Подключение к штатной магнитоле","Подключение к андроид-магнитоле"],p:"от 1 500 ₽",pn:"установка камеры и парктроника"},
+  park:   {t:"Парктроники",d:"Парковка без звука удара: датчики подскажут, сколько осталось до препятствия.",li:["Установка парктроников","Контроль слепых зон","Проверка работы"],p:"от 1 500 ₽",pn:"установка камеры и парктроника"},
   tint:   {t:"Тонировка",d:"Тонируем сертифицированными плёнками, не снимая стёкла и уплотнители.",li:["Профессиональные плёнки с сертификатами","Без снятия стёкол и уплотнителей","Плёнки разных оттенков"],p:"по запросу",pn:"цену скажем по марке авто"},
   bron:   {t:"Бронирование плёнкой",d:"Защитим краску от сколов и царапин антигравийной плёнкой.",li:["Полиуретановая плёнка","Виниловая — экономнее","Защита от сколов и царапин"],p:"по запросу",pn:"зависит от зон оклейки"},
   towbar: {t:"Установка фаркопа",d:"Установим фаркоп на вашу машину и подключим розетку прицепа.",li:["Установка фаркопа","Подключение розетки прицепа","Подбор под марку авто"],p:"по запросу",pn:"цену скажем по марке авто"},
@@ -617,7 +624,7 @@ const SVC = {
   climate:{t:"Кондиционер и печка",d:"Летом не холодит, зимой не греет — найдём причину и вернём комфорт в салон.",li:["Заправка кондиционера — от 2 900 ₽","Промывка радиатора печки — от 2 500 ₽","Без разбора торпеды"],p:"от 2 500 ₽",pn:"промывка печки"},
   audio:  {t:"Установка автозвука и шумоизоляция",d:"Динамики, усилитель, сабвуфер — и шумоизоляция дверей, чтобы звук не терялся.",li:["Динамики и усилители","Сабвуферы","Шумоизоляция дверей"],p:"от 3 000 ₽",pn:"шумоизоляция 2 дверей"},
 };
-const PRICE_ORDER = ["diag","electrics","power","alarm","radio","audio","rear","cam360","dvr","ac","climate","light","tint","bron","towbar","chip","airbag"];
+const PRICE_ORDER = ["diag","electrics","power","alarm","radio","audio","rear","park","cam360","dvr","ac","climate","light","tint","bron","towbar","chip","airbag"];
 
 const REVIEWS = [
   {n:"Ильшат Ф.",d:"15 марта 2025",t:"В ряде мест сказали, что с сигналкой на Приору большие сложности, и накручивали допы. Тут уточнили модель и сразу назвали срок и цену. Поставили за 2–3 часа, объяснили, как пользоваться, дали гарантию."},
@@ -783,7 +790,7 @@ const MODEL = {
   paints:[['Обсидиан','#15171b'],['Серебро','#aeb4bb'],['Белый','#e6e9ec'],['Синий','#1d3557']],
   shell:n=>/^mesh_(Body|Door\w\w|Hood|Trunk)_mat_(body|plastic|chrome|rubber)_0$/.test(n),
   pt:{
-    engine:[-0.06,0.86,-1.58], gen:[-0.40,0.79,-1.80], fuse:[-0.64,0.85,-1.43], rad:[-0.12,0.78,-1.95], ecu:[0.55,0.84,-1.45], fender:[-0.96,0.50,-0.72], towbar:[0,0.27,2.50], airbagPt:[-0.36,0.97,-0.42], taillightR:[0.66,0.88,2.37], headlightR:[0.68,0.70,-2.03],
+    engine:[-0.06,0.86,-1.58], gen:[-0.40,0.79,-1.80], fuse:[-0.64,0.85,-1.43], rad:[-0.12,0.78,-1.95], ecu:[0.55,0.84,-1.45], fender:[-0.96,0.50,-0.72], towbar:[0,0.27,2.50], airbagPt:[-0.36,0.905,-0.39], taillightR:[0.66,0.88,2.37], headlightR:[0.68,0.70,-2.03],
     headlight:[-0.68,0.70,-2.03], grille:[0,0.60,-2.31],
     mirror:[-1.04,0.99,-0.55], handle:[-0.92,0.85,0.10], window:[-0.77,1.14,-0.08], doorOut:[-0.95,0.70,-0.30],
     plate:[0,0.62,2.49], bumper:[-0.55,0.45,2.42], taillight:[-0.66,0.88,2.37],
@@ -892,7 +899,7 @@ gl_FragColor.rgb=mix(gl_FragColor.rgb,uXCol*(0.25+1.6*fr),xr); gl_FragColor.a=mi
 let ready=false, keys=[], spots=[], C=null, dirty=true;
 const meshes=[];
 let hoodAmt=0, pTarget=0, p=0, lastChapter=-1, hovered=null, lastHover=null, moveEvt=null, activeKey='', selectedSpot=null;
-const orbit={az:0,pol:0,vAz:0,want:null,back:null,easing:false}, sph=new THREE.Spherical(), look={yaw:0,pitch:0};
+const orbit={az:0,pol:0,vAz:0,want:null,back:null,easing:false,focus:null}, sph=new THREE.Spherical(), look={yaw:0,pitch:0};
 const inCabin=()=>chapterAt(p)===FREE&&free.inside&&free.insideK>0.9;   // осмотреться — только в свободном режиме
 let dragging=false, downX=0, downY=0, moved=false, lastX=0;
 const free={hood:false,inside:false,hoodK:0,insideK:0};
@@ -1001,7 +1008,6 @@ function onLoad(g){
     {ch:[2],free:'hood',k:'rad', svc:'ac', t:'Радиатор кондиционера', ft:'Кондиционер', inner:1},
     {ch:[2],free:'hood',k:'ecu', svc:'chip', t:'Блок управления: чип-тюнинг', ft:'Чип-тюнинг', inner:1},
     {ch:[], free:'ext', k:'headlight', svc:'light', t:'Фары и линзы', ft:'Фары'},
-    {ch:[], free:'ext', k:'headlightR', svc:'light', t:'Фары и линзы', ft:'Фары'},
     {ch:[3],free:'ext', k:'fender', svc:'bron', t:'Бронирование плёнкой', ft:'Плёнка'},
     {ch:[], free:'ext', k:'hoodTop', act:'hood', t:'Открыть капот', node:hood},
     {ch:[3],free:null , k:'handle', svc:'alarm', t:'Сигнализация, автозапуск', ft:'Сигнализация', node:door},
@@ -1009,9 +1015,8 @@ function onLoad(g){
     {ch:[3],free:'ext', k:'window', svc:'tint', t:'Тонировка', node:door},
     {ch:[], free:'ext', k:'doorOut', act:'door', t:'Заглянуть в салон', ft:'В салон', node:door},
     {ch:[4],free:'ext', k:'plate', svc:'rear', t:'Камера заднего вида', ft:'Камера'},
-    {ch:[4],free:'ext', k:'bumper', svc:'rear', t:'Парктроники', ft:'Парктроники'},
+    {ch:[4],free:'ext', k:'bumper', svc:'park', t:'Парктроники', ft:'Парктроники'},
     {ch:[4],free:'ext', k:'taillight', svc:'light', t:'Фонари', ft:'Фонари'},
-    {ch:[], free:'ext', k:'taillightR', svc:'light', t:'Фонари', ft:'Фонари'},
     {ch:[4],free:'ext', k:'towbar', svc:'towbar', t:'Фаркоп', ft:'Фаркоп'},
     {ch:[5],free:'inside',k:'screen', svc:'radio', t:'Магнитола', inner:1},
     {ch:[5],free:'inside',k:'gauges', svc:'diag', t:'Ошибка на приборке', bad:1, inner:1},
@@ -1060,9 +1065,9 @@ function resolveHit(m,pointWorld){
   if(/Trunk/.test(n)) return pt.distanceTo(C.plate)<0.35?['Номер и камера','svc','rear',C.plate]:['Багажник','msg','Камера заднего вида — над номером, нажмите на номер.',null];
   if(/Body_mat_(plastic|chrome)/.test(n)&&pt.distanceTo(C.grille)<0.2) return ['Решётка радиатора','svc','ac',C.grille];   // только сама решётка
   if(pt.distanceTo(C.towbar)<0.25) return ['Фаркоп','svc','towbar',C.towbar];
-  if(Math.abs(u)>C.L*0.5-0.45&&pt.y<0.62) return [u>0?'Передний бампер':'Задний бампер','svc','rear',pt];
+  if(Math.abs(u)>C.L*0.5-0.45&&pt.y<0.62) return [u>0?'Передний бампер':'Задний бампер','svc','park',pt];
   if(pt.distanceTo(C.fender)<0.3) return ['Крыло','svc','bron',pt];   // кузов у фары — бронирование плёнкой
-  return ['Кузов','msg',MSG.body,null];
+  return ['Кузов','svc','bron',pt];   // кузов — бронирование плёнкой
 }
 
 /* ---------- позы ---------- */
@@ -1090,6 +1095,9 @@ function applyOrbit(r,ch){
   tmp.copy(r.pos).sub(r.tgt); sph.setFromVector3(tmp);
   if(orbit.want!==null&&!dragging){ const d=(orbit.want-sph.phi)-orbit.pol; orbit.pol+=d*0.12; orbit.easing=Math.abs(d)>0.003; }
   else if(orbit.back!==null&&!dragging){ const d=orbit.back-orbit.pol; orbit.pol+=d*0.12; orbit.easing=Math.abs(d)>0.003; if(!orbit.easing) orbit.back=null; }
+  if(orbit.focus&&!dragging){   // повернуть машину к выбранной точке
+    const tn=Math.atan2(orbit.focus.x-r.tgt.x,orbit.focus.z-r.tgt.z); let d=tn-sph.theta-orbit.az; d=Math.atan2(Math.sin(d),Math.cos(d));
+    orbit.az+=d*0.1; orbit.easing=orbit.easing||Math.abs(d)>0.003; }
   orbit.pol=THREE.MathUtils.clamp(orbit.pol,0.2-sph.phi,1.48-sph.phi);
   sph.theta+=orbit.az*w; sph.phi+=orbit.pol*w;
   if(free.hoodK>0.01) sph.radius*=1-0.3*free.hoodK;
@@ -1123,7 +1131,7 @@ function frame(){
   pTarget=devP??THREE.MathUtils.clamp((scrollY-st.offsetTop)/max,0,1);
   $('#bar').style.transform=`scaleX(${pTarget})`;
   $('#shint').style.opacity=pTarget>0.02?0:1;
-  const dk=pTarget>=CHAPTERS[1].from-0.005||scrollY>st.offsetTop+max; if(document.body.classList.contains('dock-on')!==dk){ document.body.classList.toggle('dock-on',dk); layoutCaps(); }
+  /* плашка «позвонить» — вместе с карточкой второй главы */ const dk=chapterAt(p)>=1||scrollY>st.offsetTop+max; if(document.body.classList.contains('dock-on')!==dk){ document.body.classList.toggle('dock-on',dk); layoutCaps(); }
   const dockOn=document.body.matches('.dock-on:not(.book-on):not(.sheet-open)'); if($('#dock').inert===dockOn) $('#dock').inert=!dockOn;
   const dt=Math.min(clock.getDelta(),0.3), time=clock.elapsedTime;
   if(!visible||!ready) return;
@@ -1141,7 +1149,8 @@ function frame(){
   if(ch!==lastChapter){ setChapter(ch); lastChapter=ch; dirty=true; }
   viewK+=((freeSpin?1:0)-viewK)*(1-Math.pow(0.02,dt)); if(Math.abs(viewK-(freeSpin?1:0))<0.002) viewK=freeSpin?1:0;   // вход/выход из «Рассмотреть» — камера сдвигается плавно
   /* вышли из «Рассмотреть» — машина плавно возвращается в исходный ракурс */
-  if(ch!==FREE||free.inside||!canSpin()){ const k=Math.pow(ch===FREE&&!canSpin()?0.12:0.03,dt); orbit.az*=k; orbit.pol*=k; orbit.vAz=0; orbit.want=null; if(Math.abs(orbit.az)<1e-3) orbit.az=0; if(Math.abs(orbit.pol)<1e-3) orbit.pol=0; }
+  if(ch!==FREE||free.inside) orbit.focus=null;
+  if((ch!==FREE||free.inside||!canSpin())&&!orbit.focus){ const k=Math.pow(ch===FREE&&!canSpin()?0.12:0.03,dt); orbit.az*=k; orbit.pol*=k; orbit.vAz=0; orbit.want=null; if(Math.abs(orbit.az)<1e-3) orbit.az=0; if(Math.abs(orbit.pol)<1e-3) orbit.pol=0; }
   else if(!dragging&&orbit.vAz){ orbit.az+=orbit.vAz*dt; orbit.vAz*=Math.pow(0.02,dt); if(Math.abs(orbit.vAz)<0.02) orbit.vAz=0; }
   refreshActive(ch);
   if(moveEvt){ const e=moveEvt; moveEvt=null; const h=pick(e); hovered=h&&h.hit[1]!=='msg'?h:null; tipFor(hovered,e); canvas.style.cursor=hovered?'pointer':((ch===FREE&&!free.inside&&canSpin())||inCabin()?'grab':''); }   // наведение — не чаще раза в кадр
@@ -1202,6 +1211,7 @@ function selectSpot(s){
   if(s.act){ doAction(s.act); return; }
   if(selectedSpot===s&&$('#sheet').classList.contains('on')){ hideSheet(); return; }   // повторный тап — закрыть
   showSheet(s.svc,s.t); selectedSpot=s; markSelected();
+  if(chapterAt(p)===FREE&&!s.inner){ orbit.focus=s.node.localToWorld(s.local.clone()); orbit.vAz=0; dirty=true; }   // финал: повернуть к точке
 }
 $('#chipbar').addEventListener('click',e=>{
   const c=e.target.closest('.chip'); if(!c) return;
@@ -1267,7 +1277,7 @@ function showSheet(k,partName){
   $('#sheet').classList.add('on'); document.body.classList.add('sheet-open'); $('#sheet .x').onclick=hideSheet;
   window.goal?.('part_click',{svc:k});
 }
-function hideSheet(){ $('#sheet').classList.remove('on'); document.body.classList.remove('sheet-open'); selectedSpot=null; sheetPart=''; markSelected(); }
+function hideSheet(){ if(orbit.focus){ orbit.focus=null; dirty=true; } $('#sheet').classList.remove('on'); document.body.classList.remove('sheet-open'); selectedSpot=null; sheetPart=''; markSelected(); }
 addEventListener('scroll',()=>{ if($('#sheet').classList.contains('on')&&Math.abs(scrollY-sheetY)>28) hideSheet(); },{passive:true});   // начал листать — карточку убираем
 addEventListener('uzi-escape',hideSheet); addEventListener('uzi-form-open',hideSheet);
 /* режим «Рассмотреть машину»: страница стоит, машину крутят во все стороны; выход — крупной кнопкой, Esc или «Назад» */
@@ -1346,7 +1356,7 @@ function tipFor(h,e){
   t.style.transform=`translate(${e.clientX-rc.left+16}px,${e.clientY-rc.top+16}px)`; t.classList.add('on');
 }
 let lastY=0, lastMoveT=0, activePointer=null, dragMode=null;
-canvas.addEventListener('pointerdown',e=>{ if(activePointer!==null) return; activePointer=e.pointerId; downX=lastX=e.clientX; downY=lastY=e.clientY; lastMoveT=e.timeStamp; moved=false; dragMode=chapterAt(p)===FREE&&!free.inside&&canSpin()?'orbit':inCabin()?'look':null; dragging=!!dragMode; if(dragging) orbit.vAz=0; });
+canvas.addEventListener('pointerdown',e=>{ if(activePointer!==null) return; activePointer=e.pointerId; downX=lastX=e.clientX; downY=lastY=e.clientY; lastMoveT=e.timeStamp; moved=false; dragMode=chapterAt(p)===FREE&&!free.inside&&canSpin()?'orbit':inCabin()?'look':null; dragging=!!dragMode; if(dragging){ orbit.vAz=0; orbit.focus=null; } });
 addEventListener('pointermove',e=>{
   if(dragging&&e.buttons&&e.pointerId===activePointer){
     const dx=e.clientX-lastX, dy=e.clientY-lastY; lastX=e.clientX; lastY=e.clientY;
