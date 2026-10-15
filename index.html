@@ -584,7 +584,7 @@ const PRICE_ORDER = ["diag","power","alarm","radio","rear","cam360","dvr","ac","
 
 const REVIEWS = [
   {n:"Ильшат Ф.",d:"15 марта 2025",t:"В ряде мест сказали, что с сигналкой на Приору большие сложности, и накручивали допы. Тут уточнили модель и сразу назвали срок и цену. Поставили за 2–3 часа, объяснили, как пользоваться, дали гарантию."},
-  {n:"ИльяС",d:"7 февраля 2026",t:"Не открывалась водительская дверь, Элантра 6. Нашли проблему, попутно отремонтировали кнопку брелока. Цены не дешёвые, но в смене 6 электриков, каждый на своих марках, — сразу понимают, куда смотреть. Заняло 1 час, цена вопроса 3500 руб."},
+  {n:"ИльяС",d:"7 февраля 2026",t:"Не открывалась водительская дверь, Элантра 6. Нашли проблему, попутно отремонтировали кнопку брелока. В смене 6 электриков, каждый на своих марках, сразу понимают, куда смотреть. Заняло 1 час."},
   {n:"Blissargon Barju",d:"19 мая 2025",t:"Без проблем ремонтируют всё подряд, диагност просто умничка. Китайские авто можно ремонтировать без страха. Каждый год прохожу у них осмотр радиаторов. Есть заправка фреоном."},
   {n:"Загир Бурангулов",d:"20 июля 2025",t:"Быстро, качественно и профессионально! Ребята — настоящие знатоки своего дела. Отдельный респект электрику Денису!"},
   {n:"Станислав Шевалдин",d:"23 апреля 2026",t:"Небольшой по площади бокс, но работают профессионалы своего дела по части автоэлектрики. Рекомендую."},
@@ -1207,15 +1207,16 @@ function hideSheet(){ $('#sheet').classList.remove('on'); document.body.classLis
 addEventListener('scroll',()=>{ if($('#sheet').classList.contains('on')&&Math.abs(scrollY-sheetY)>28) hideSheet(); },{passive:true});   // начал листать — карточку убираем
 addEventListener('uzi-escape',hideSheet); addEventListener('uzi-form-open',hideSheet);
 let freeSpin=false;   // крутить машину — только если человек сам нажал кнопку
-$('#spinBtn').addEventListener('click',e=>{ freeSpin=!freeSpin; e.currentTarget.textContent=freeSpin?'Готово ✓':'Покрутить самому ↔';
+const setSpin=on=>{ freeSpin=on; $('#spinBtn').textContent=on?'Готово ✓':'Покрутить самому ↔'; };   // открыл капот или салон — крутить можно сразу
+$('#spinBtn').addEventListener('click',()=>{ setSpin(!freeSpin);
   if(freeSpin) toast(matchMedia('(pointer:coarse)').matches?'Ведите пальцем по машине влево-вправо':'Тяните машину мышью в любую сторону'); else { orbit.vAz=0; orbit.back=0; }
   window.goal?.('free_spin'); });
 let toastT; function toast(t){ const el=$('#toast'); el.textContent=t; el.classList.add('on'); clearTimeout(toastT); toastT=setTimeout(()=>el.classList.remove('on'),3000); }
 function doAction(a){
   hideSheet(); dirty=true;
   if(chapterAt(p)!==FREE){ a==='hood'?showSheet('power','Капот'):showSheet('alarm','Дверь'); return; }
-  if(a==='hood'){ free.hood=!free.hood; if(free.hood){ orbit.saved=orbit.pol; orbit.want=0.55; } else { orbit.want=null; orbit.back=orbit.saved??0; } if(free.hood) toast('Капот открыт — выберите номер: двигатель, генератор, проводка, кондиционер'); }
-  if(a==='door'){ free.inside=true; free.hood=false; }
+  if(a==='hood'){ free.hood=!free.hood; if(free.hood){ orbit.saved=orbit.pol; orbit.want=0.55; } else { orbit.want=null; orbit.back=orbit.saved??0; } if(free.hood){ setSpin(true); } if(free.hood) toast('Капот открыт — выберите номер: двигатель, генератор, проводка, кондиционер'); }
+  if(a==='door'){ free.inside=true; free.hood=false; setSpin(true); }
 }
 $('#exitBtn').addEventListener('click',()=>{ free.inside=false; hideSheet(); dirty=true; });
 
