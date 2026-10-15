@@ -108,24 +108,27 @@ h1,h2,h3{font-family:var(--f-d);line-height:1.08;letter-spacing:-.015em;text-wra
 }
 /* первый экран: что случилось */
 .quick{margin-top:16px}
-.quick>b{display:block;font-size:14px;font-weight:700;margin-bottom:8px}
+.quick>b{display:block;font-size:15px;font-weight:700;margin-bottom:8px}
 .quick div{display:grid;grid-template-columns:1fr 1fr;gap:8px;max-width:460px}
 .quick button,.quick a{display:block;padding:12px 14px;border-radius:14px;text-align:left;font-weight:600;font-size:15px;background:var(--glass);border:1px solid var(--glass-line);color:var(--text);transition:border-color .2s}
+.quick div>:last-child:nth-child(odd){grid-column:1/-1}   /* нечётная последняя кнопка — на всю ширину */
 .quick button:hover,.quick a:hover{border-color:var(--accent-text)}
-@media(max-width:700px){.cap[data-c="0"]>p{display:none}.quick{margin-top:10px}.quick button,.quick a{padding:11px 12px;font-size:14px}}
+@media(max-width:700px){.cap[data-c="0"]>p{display:none}.quick{margin-top:10px}.quick button,.quick a{padding:11px 12px;font-size:15px}}
 /* телефон: подсказка «листайте» над карточкой первого экрана */
 .swipe{display:none}
 @media(max-width:700px){
-  /* жест: палец касается снизу и ведёт вверх, за ним — светящийся след; после первого свайпа исчезает */
-  .swipe{display:block;position:absolute;right:14px;bottom:10px;width:60px;height:150px;z-index:6;pointer-events:none;opacity:0;transition:opacity .4s}
+  /* жест: палец касается заголовка и ведёт вверх, рядом подпись; в 3D-истории повторяется через 12 с бездействия */
+  .swipe{display:block;position:absolute;left:50%;bottom:0;width:60px;height:240px;margin-left:-30px;z-index:6;pointer-events:none;opacity:0;transition:opacity .4s}
   body.hint-on:not(.viewing) .swipe{opacity:1}
-  .swipe .trail{position:absolute;left:28px;bottom:42px;width:6px;height:90px;border-radius:6px;background:linear-gradient(to top,var(--accent),transparent);transform-origin:bottom;animation:swTrail 2s cubic-bezier(.45,0,.2,1) infinite}
-  .swipe .dot{position:absolute;left:17px;bottom:28px;width:28px;height:28px;border-radius:50%;border:2px solid var(--accent);animation:swDot 2s cubic-bezier(.45,0,.2,1) infinite}
-  .swipe svg{position:absolute;left:8px;bottom:0;width:52px;height:52px;fill:#fff;stroke:#0d1a15;stroke-width:1.4;filter:drop-shadow(0 4px 10px rgba(0,0,0,.45));animation:swHand 2s cubic-bezier(.45,0,.2,1) infinite}
+  .swipe .trail{position:absolute;left:28px;bottom:42px;width:6px;height:170px;border-radius:6px;background:linear-gradient(to top,var(--accent),transparent);transform-origin:bottom;animation:swTrail 2.2s cubic-bezier(.45,0,.2,1) infinite}
+  .swipe .dot{position:absolute;left:17px;bottom:28px;width:28px;height:28px;border-radius:50%;border:2px solid var(--accent);animation:swDot 2.2s cubic-bezier(.45,0,.2,1) infinite}
+  .swipe .hand{position:absolute;left:8px;bottom:0;width:52px;height:52px;animation:swHand 2.2s cubic-bezier(.45,0,.2,1) infinite}
+  .swipe svg{width:52px;height:52px;fill:#fff;stroke:#0d1a15;stroke-width:1.4;filter:drop-shadow(0 4px 10px rgba(0,0,0,.45))}
+  .swipe .hand b{position:absolute;right:50px;top:10px;white-space:nowrap;padding:7px 12px;border-radius:999px;background:var(--glass);border:1px solid var(--glass-line);backdrop-filter:blur(8px);font-size:14px;font-weight:700;color:var(--text)}
 }
-@keyframes swHand{0%{transform:translateY(0);opacity:0}12%{opacity:1;transform:translateY(0)}22%{transform:translateY(0) scale(.92)}70%{transform:translateY(-92px) scale(.92);opacity:1}85%,100%{transform:translateY(-100px);opacity:0}}
-@keyframes swDot{0%,14%{transform:translateY(0) scale(.4);opacity:0}22%{transform:translateY(0) scale(1);opacity:1}70%{transform:translateY(-92px) scale(1);opacity:.9}85%,100%{transform:translateY(-100px) scale(1.4);opacity:0}}
-@keyframes swTrail{0%,20%{transform:scaleY(0);opacity:0}70%{transform:scaleY(1);opacity:.7}100%{transform:scaleY(1);opacity:0}}
+@keyframes swHand{0%{transform:translateY(0);opacity:0}12%{opacity:1;transform:translateY(0)}22%{transform:translateY(0) scale(.94)}72%{transform:translateY(-170px) scale(.94);opacity:1}86%,100%{transform:translateY(-180px);opacity:0}}
+@keyframes swDot{0%,14%{transform:translateY(0) scale(.4);opacity:0}22%{transform:translateY(0) scale(1);opacity:1}72%{transform:translateY(-170px) scale(1);opacity:.9}86%,100%{transform:translateY(-180px) scale(1.4);opacity:0}}
+@keyframes swTrail{0%,20%{transform:scaleY(0);opacity:0}72%{transform:scaleY(1);opacity:.7}100%{transform:scaleY(1);opacity:0}}
 /* режим «Рассмотреть машину»: страница стоит, машину крутят пальцем во все стороны */
 .viewbar{position:fixed;z-index:60;left:50%;bottom:calc(18px + env(safe-area-inset-bottom,0px));transform:translate(-50%,20px);display:flex;gap:8px;opacity:0;visibility:hidden;transition:.3s var(--ease)}
 .viewbar .btn{padding:15px 22px;font-size:16px;white-space:nowrap}
@@ -194,14 +197,14 @@ body.viewing .chipbar{bottom:calc(92px + var(--hid,0px) + env(safe-area-inset-bo
   .cap{padding:16px 18px 18px;border-radius:22px;background:var(--glass);backdrop-filter:blur(14px);border:1px solid var(--glass-line);opacity:0;visibility:hidden;transition:opacity .5s,visibility .5s}
   .cap.on{opacity:1;visibility:visible}
   .cap h2,.cap h1{font-size:24px;margin:10px 0 8px}
-  .facts{font-size:12.5px;margin-top:8px}
-  .skip{margin-top:10px;font-size:13px}
-  .cap p{font-size:14.5px}
+  .facts{font-size:14px;margin-top:8px}
+  .skip{margin-top:10px;font-size:14.5px}
+  .cap p{font-size:16px}
   .cap:not([data-c="0"]):not([data-c="6"]) .row{display:none}
   .cap .row .btn{flex:1;padding:13px 14px;font-size:15px}
   .cap .row .num{display:none}
   .paints{margin-top:14px}
-  .pill{margin-top:12px;font-size:13px;padding:10px 14px}
+  .pill{margin-top:12px;font-size:14.5px;padding:10px 14px}
 }
 
 @media(max-height:640px) and (min-width:701px){.caps{bottom:96px}.cap h2{font-size:clamp(26px,3.4vw,40px);margin:10px 0}.cap .row{margin-top:14px}.paints{display:none}}
@@ -245,7 +248,7 @@ body.viewing .chipbar{bottom:calc(92px + var(--hid,0px) + env(safe-area-inset-bo
 /* компьютер с мышью — как было; телефон/планшет — свой вариант */
 @media(max-width:700px){.cap p.d{display:none}.cap p.m{display:block}}
 @media(max-width:700px){.cap[data-c="0"] .paints{display:none}}
-@media(max-width:700px){.chipbar{left:12px;right:12px;max-width:none;bottom:calc(74px + var(--hid,0px) + env(safe-area-inset-bottom,0px))}.chip{font-size:13px}}
+@media(max-width:700px){.chipbar{left:12px;right:12px;max-width:none;bottom:calc(74px + var(--hid,0px) + env(safe-area-inset-bottom,0px))}.chip{font-size:14.5px}}
 
 /* подсказка под курсором */
 .tip{position:absolute;left:0;top:0;z-index:8;pointer-events:none;padding:7px 11px;border-radius:10px;background:var(--glass);border:1px solid var(--accent-line);font-size:13px;font-weight:700;white-space:nowrap;opacity:0;transition:opacity .2s}
@@ -351,14 +354,14 @@ body.dock-on:not(.book-on):not(.sheet-open) .dock{opacity:1;pointer-events:auto;
 .contacts a:hover{border-color:var(--accent-text)}
 .contacts .ic{width:42px;height:42px;flex:0 0 42px;border-radius:12px;display:grid;place-items:center;background:var(--accent-dim);color:var(--accent-text)}
 .contacts .ic svg{width:20px;height:20px}
-.contacts small{display:block;color:var(--muted);font-size:13px}
+.contacts small{display:block;color:var(--muted);font-size:14px}
 .contacts b{font-variant-numeric:tabular-nums}
 .copy{margin-left:auto;padding:8px 12px;border-radius:10px;border:1px solid var(--line);font-size:13px;font-weight:700}
 
 /* форма */
 .form{position:relative;padding:clamp(22px,3vw,34px);border-radius:24px;background:var(--card);border:1px solid var(--line)}
 .field{margin-bottom:14px}
-.field label{display:block;font-size:13px;font-weight:600;color:var(--muted);margin-bottom:6px}
+.field label{display:block;font-size:14px;font-weight:600;color:var(--muted);margin-bottom:6px}
 .field input,.field select,.field textarea{width:100%;padding:15px 16px;border-radius:12px;border:1px solid var(--line);background:var(--bg2);color:var(--text);font:inherit;transition:border-color .2s,box-shadow .2s}
 .field textarea{min-height:80px;resize:vertical}
 .field :focus{outline:none;border-color:var(--accent-text);box-shadow:0 0 0 4px var(--accent-dim)}
@@ -373,7 +376,7 @@ body.dock-on:not(.book-on):not(.sheet-open) .dock{opacity:1;pointer-events:auto;
 .slots span{display:inline-block;padding:10px 14px;border-radius:10px;border:1px solid var(--line);background:var(--bg2);font-size:14px;font-weight:600;transition:.2s}
 .slots input:checked+span{border-color:var(--accent-text);color:var(--accent-text);background:var(--accent-dim)}
 .slots input:focus-visible+span{outline:2px solid var(--accent-text)}
-.consent{display:flex;gap:10px;align-items:flex-start;font-size:13px;color:var(--muted);margin:14px 0 20px}
+.consent{display:flex;gap:10px;align-items:flex-start;font-size:14px;color:var(--muted);margin:14px 0 20px}
 .consent input{margin-top:3px;accent-color:var(--accent-text)}
 .form .btn{width:100%}
 .done{display:none;text-align:center;padding:26px 6px}
@@ -381,7 +384,7 @@ body.dock-on:not(.book-on):not(.sheet-open) .dock{opacity:1;pointer-events:auto;
 .done p{color:var(--muted)}
 .formerr{margin-top:12px;color:var(--err);font-size:14px;font-weight:600}
 .form.sent form{display:none}.form.sent .done{display:block}
-.demo{margin-top:12px;font-size:12px;color:var(--muted);text-align:center}
+.demo{margin-top:12px;font-size:13.5px;color:var(--muted);text-align:center}
 
 .modal{position:fixed;inset:0;z-index:90;display:grid;place-items:center;padding:16px;background:rgba(3,6,9,.6);backdrop-filter:blur(8px);opacity:0;visibility:hidden;transition:.35s}
 .modal.open{opacity:1;visibility:visible}
@@ -404,7 +407,7 @@ footer .wrap{display:flex;flex-wrap:wrap;gap:16px;justify-content:space-between}
 @keyframes draw{to{stroke-dashoffset:-120}}
 @keyframes pop{from{transform:scale(.4);opacity:0}}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}.js .rv:not(.in){opacity:1;transform:none}
-  .swipe *{animation-duration:2s!important;animation-iteration-count:infinite!important}}   /* палец-подсказка двигается всегда: без движения непонятно, что делать */
+  .swipe *{animation-duration:2.2s!important;animation-iteration-count:infinite!important}}   /* палец-подсказка двигается всегда: без движения непонятно, что делать */
 </style>
 </head>
 <body>
@@ -441,12 +444,12 @@ setTimeout(function(){ if(!window.__3d) window.no3d(); },12000);
     <div class="tip" id="tip"></div>
 
     <div class="caps" id="caps">
-        <div class="swipe" aria-hidden="true"><span class="trail"></span><span class="dot"></span><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11.5V4.6a1.6 1.6 0 0 1 3.2 0V10l.1-1.2a1.6 1.6 0 0 1 3.2.2v1.4a1.6 1.6 0 0 1 3.2 0v1.2a1.6 1.6 0 0 1 3.2 0V15a7 7 0 0 1-7 7h-1.6a6 6 0 0 1-4.6-2.2l-3.9-4.7a1.7 1.7 0 0 1 2.5-2.3L9 14.4z"/></svg></div>
+        <div class="swipe" aria-hidden="true"><span class="trail"></span><span class="dot"></span><span class="hand"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11.5V4.6a1.6 1.6 0 0 1 3.2 0V10l.1-1.2a1.6 1.6 0 0 1 3.2.2v1.4a1.6 1.6 0 0 1 3.2 0v1.2a1.6 1.6 0 0 1 3.2 0V15a7 7 0 0 1-7 7h-1.6a6 6 0 0 1-4.6-2.2l-3.9-4.7a1.7 1.7 0 0 1 2.5-2.3L9 14.4z"/></svg><b>Листайте вверх</b></span></div>
       <div class="cap on" data-c="0">
-        <span class="kick">Авто УЗИ · видим машину насквозь</span>
-        <h1>Автоэлектрик и диагностика <em>в Уфе</em></h1>
-        <p>Не заводится, садится аккумулятор, горит ошибка? Найдём причину и согласуем стоимость до ремонта.</p>
-        <div class="quick"><b>Что случилось с машиной?</b><div>
+        <span class="kick" id="heroKick">Авто УЗИ · видим машину насквозь</span>
+        <h1 id="heroH">Автоэлектрик и диагностика <em>в Уфе</em></h1>
+        <p id="heroP">Не заводится, садится аккумулятор, горит ошибка? Найдём причину и согласуем стоимость до ремонта.</p>
+        <div class="quick"><b id="heroQ">Что случилось с машиной?</b><div id="heroBtns">
           <button data-open="Не заводится" data-svc="power" data-note="Не заводится">Не заводится</button>
           <button data-open="Горит ошибка" data-svc="diag" data-note="Горит ошибка на панели">Горит ошибка</button>
           <button data-open="Садится аккумулятор" data-svc="power" data-note="Садится аккумулятор">Садится АКБ</button>
@@ -597,19 +600,24 @@ const LEAD_ENDPOINT = null; // куда слать заявки (Telegram-бот
 /* Услуги. Цены — из объявлений Александра на Авито и карточки на Яндекс Картах */
 const SVC = {
   diag:   {t:"Компьютерная диагностика",d:"Считываем ошибки сканером и проверяем, что за ними стоит на самом деле. Сбросить ошибку — не ремонт.",li:["Чтение и расшифровка ошибок","Проверка датчиков и проводки","Цена фиксируется после диагностики"],p:"2 000 ₽",pn:"диагностика"},
-  power:  {t:"АКБ, стартер, генератор",d:"Машина не заводится или садится за ночь? Сначала замеряем — менять аккумулятор вслепую не нужно.",li:["Поиск утечки тока","Ремонт стартеров и генераторов","Ремонт проводки"],p:"по диагностике",pn:"цену скажем после замеров"},
+  power:  {t:"АКБ, стартер, генератор",d:"Не заводится, садится за ночь или падает напряжение? Сначала замеряем — менять аккумулятор вслепую не нужно.",li:["Поиск утечки тока","Ремонт стартеров и генераторов","Ремонт проводки"],p:"по диагностике",pn:"цену скажем после замеров"},
   light:  {t:"Свет и оптика",d:"Ремонт фар, установка линз, автосвет. Чтобы ночью было видно дорогу, а не только вас.",li:["Ремонт фар и фонарей","Установка линз","Электрика света"],p:"по запросу",pn:"зависит от фары"},
   ac:     {t:"Кондиционер",d:"Дует тёплым? Сначала ищем утечку, потом заправляем — иначе фреон уйдёт через неделю.",li:["Опрессовка и поиск утечки","Заправка R134a, замена масла","Ремонт компрессора и муфты"],p:"от 2 900 ₽",pn:"заправка"},
   alarm:  {t:"Сигнализация и автозапуск",d:"Starline, Pandora, Призрак. Запуск по времени, температуре или с телефона, штатные функции сохраняем.",li:["Подбор под авто и бюджет","Реле, замок капота, блокировки","Покажем, как пользоваться"],p:"от 5 000 ₽",pn:"с автозапуском — от 5 499 ₽"},
   cam360: {t:"Камеры и обзор 360°",d:"Камеры по кругу машины — при парковке видно всё вокруг.",li:["Камеры переднего и заднего вида","Системы кругового обзора","Подключение к штатному экрану"],p:"по запросу",pn:"камера заднего вида — от 2 000 ₽"},
   dvr:    {t:"Видеорегистратор",d:"Установим видеорегистратор: подберём под ваш автомобиль и подключим.",li:["Подбор регистратора","Установка и подключение","Проверка работы"],p:"по запросу",pn:"зависит от модели"},
   rear:   {t:"Камера заднего вида и парктроники",d:"Парковка без звука удара. Подключаем к штатной магнитоле или к андроид-магнитоле.",li:["Камера заднего вида","Парктроники","Контроль слепых зон"],p:"от 1 500 ₽",pn:"установка камеры и парктроника"},
-  tint:   {t:"Тонировка и бронирование",d:"Тонировка стёкол и бронирование плёнкой — защита от сколов и солнца.",li:["Тонировка стёкол","Бронирование стёкол","Бронирование кузова плёнкой"],p:"по запросу",pn:"зависит от авто"},
-  radio:  {t:"Андроид-магнитола",d:"Купили магнитолу, а она не встаёт? Подберём рамку и переходники, подключим и настроим.",li:["Teyes, Incar и др.","Рамки 1–2 din под ваш авто","Камеры, звук, настройка"],p:"от 1 500 ₽",pn:"установка"},
+  tint:   {t:"Тонировка",d:"Тонируем сертифицированными плёнками, не снимая стёкла и уплотнители.",li:["Профессиональные плёнки с сертификатами","Без снятия стёкол и уплотнителей","Плёнки разных оттенков"],p:"по запросу",pn:"цену скажем по марке авто"},
+  bron:   {t:"Бронирование плёнкой",d:"Защитим краску от сколов и царапин антигравийной плёнкой.",li:["Полиуретановая плёнка","Виниловая — экономнее","Защита от сколов и царапин"],p:"по запросу",pn:"зависит от зон оклейки"},
+  towbar: {t:"Установка фаркопа",d:"Установим фаркоп на вашу машину и подключим розетку прицепа.",li:["Установка фаркопа","Подключение розетки прицепа","Подбор под марку авто"],p:"по запросу",pn:"цену скажем по марке авто"},
+  electrics:{t:"Ремонт автоэлектрики",d:"Не работает электрика — сначала ищем причину на диагностике, потом ремонтируем.",li:["Диагностика на оборудовании","Ремонт проводки и электрооборудования","Отечественные и иномарки"],p:"по диагностике",pn:"цену скажем после проверки"},
+  chip:   {t:"Чип-тюнинг",d:"Настройка блока управления двигателем: больше мощности и тяги, у турбомоторов — заметнее.",li:["Прошивка блока управления","Прибавка мощности 5–10%","У турбомоторов — от 20%"],p:"по запросу",pn:"зависит от двигателя"},
+  airbag: {t:"Подушки безопасности (SRS)",d:"Горит лампа airbag или подушка сработала после ДТП — найдём неисправность и восстановим.",li:["Диагностика SRS","Ремонт после срабатывания","Восстановление торпеды и руля"],p:"по запросу",pn:"цену скажем после диагностики"},
+  radio:  {t:"Установка магнитолы",d:"Обычная или андроид — подберём рамку и переходники, подключим и настроим.",li:["Teyes, Incar и др.","Рамки 1–2 din под ваш авто","Камеры, звук, настройка"],p:"от 1 500 ₽",pn:"установка"},
   climate:{t:"Кондиционер и печка",d:"Летом не холодит, зимой не греет — найдём причину и вернём комфорт в салон.",li:["Заправка кондиционера — от 2 900 ₽","Промывка радиатора печки — от 2 500 ₽","Без разбора торпеды"],p:"от 2 500 ₽",pn:"промывка печки"},
-  audio:  {t:"Автозвук и шумоизоляция",d:"Динамики, усилитель, сабвуфер — и шумоизоляция дверей, чтобы звук не терялся.",li:["Динамики и усилители","Сабвуферы","Шумоизоляция дверей"],p:"от 3 000 ₽",pn:"шумоизоляция 2 дверей"},
+  audio:  {t:"Установка автозвука и шумоизоляция",d:"Динамики, усилитель, сабвуфер — и шумоизоляция дверей, чтобы звук не терялся.",li:["Динамики и усилители","Сабвуферы","Шумоизоляция дверей"],p:"от 3 000 ₽",pn:"шумоизоляция 2 дверей"},
 };
-const PRICE_ORDER = ["diag","power","alarm","radio","rear","cam360","dvr","ac","climate","audio","light","tint"];
+const PRICE_ORDER = ["diag","electrics","power","alarm","radio","audio","rear","cam360","dvr","ac","climate","light","tint","bron","towbar","chip","airbag"];
 
 const REVIEWS = [
   {n:"Ильшат Ф.",d:"15 марта 2025",t:"В ряде мест сказали, что с сигналкой на Приору большие сложности, и накручивали допы. Тут уточнили модель и сразу назвали срок и цену. Поставили за 2–3 часа, объяснили, как пользоваться, дали гарантию."},
@@ -632,6 +640,23 @@ $('#modeBtn').addEventListener('click',()=>{
   document.documentElement.setAttribute('data-mode',m); store.set('uzi-mode',m);
   window.dispatchEvent(new CustomEvent('uzi-mode',{detail:m})); goal('theme_'+m);
 });
+
+/* первый экран под тему рекламы: ?tema=signalizaciya|plenka|zvuk|magnitola|farkop|elektrika (без темы — диагностика) */
+const THEMES={
+  signalizaciya:{kick:'Авто УЗИ · сигнализации и автозапуск',h:'Сигнализация с автозапуском <em>в Уфе</em>',p:'Подберём Starline, Pandora или Призрак под машину и бюджет, установим и покажем, как пользоваться.',q:'Что нужно?',b:[['Сигнализация с автозапуском','alarm'],['Запуск с телефона','alarm'],['Камеры 360°','cam360']],main:['Запись на установку сигнализации','alarm']},
+  plenka:{kick:'Авто УЗИ · тонировка и плёнка',h:'Тонировка и бронирование <em>в Уфе</em>',p:'Тонируем сертифицированными плёнками без снятия стёкол. Защитим краску плёнкой от сколов и царапин.',q:'Что нужно?',b:[['Тонировка стёкол','tint'],['Бронирование плёнкой','bron']],main:['Запись на тонировку','tint']},
+  zvuk:{kick:'Авто УЗИ · автозвук',h:'Автозвук и шумоизоляция <em>в Уфе</em>',p:'Подберём и установим магнитолу, динамики, усилитель и сабвуфер, сделаем шумоизоляцию дверей.',q:'Что нужно?',b:[['Магнитола','radio'],['Динамики и сабвуфер','audio'],['Шумоизоляция','audio']],main:['Запись на установку звука','audio']},
+  magnitola:{kick:'Авто УЗИ · магнитолы',h:'Установка магнитолы <em>в Уфе</em>',p:'Обычные и андроид-магнитолы: подберём рамку и переходники, подключим камеры и настроим.',q:'Что нужно?',b:[['Установить магнитолу','radio'],['Камера заднего вида','rear'],['Динамики','audio']],main:['Запись на установку магнитолы','radio']},
+  farkop:{kick:'Авто УЗИ · фаркопы',h:'Установка фаркопа <em>в Уфе</em>',p:'Установим фаркоп и подключим розетку прицепа. Цену назовём по марке и модели.',q:'Что нужно?',b:[['Установить фаркоп','towbar'],['Подключить розетку','towbar']],main:['Запись на установку фаркопа','towbar']},
+  elektrika:{kick:'Авто УЗИ · автоэлектрик',h:'Автоэлектрик <em>в Уфе</em>',p:'Падает напряжение, садится аккумулятор, не работает электрика? Найдём причину и согласуем цену до ремонта.',q:'Что случилось с машиной?',b:[['Падает напряжение','power'],['Садится АКБ','power'],['Не работает электрика','electrics']],main:['Запись к автоэлектрику','electrics']},
+};
+const temaKey=new URLSearchParams(location.search).get('tema'), TH=Object.prototype.hasOwnProperty.call(THEMES,temaKey)?THEMES[temaKey]:null;
+if(TH){
+  $('#heroKick').textContent=TH.kick; $('#heroH').innerHTML=TH.h; $('#heroP').textContent=TH.p; $('#heroQ').textContent=TH.q;
+  $('#heroBtns').innerHTML=TH.b.map(([t,k])=>`<button data-open="${t}" data-svc="${k}" data-note="${t}">${t}</button>`).join('')+'<a href="#prices-sec" data-goal="quick_other">Все услуги ↓</a>';
+  const mb=$('.cap[data-c="0"] .row .btn-main'); mb.dataset.open=TH.main[0]; mb.dataset.svc=TH.main[1];
+  document.title=TH.h.replace(/<[^>]+>/g,'')+' — Авто УЗИ';
+}
 
 /* меню */
 const menuBtn=$('#menuBtn');
@@ -773,7 +798,7 @@ const ZONES_BAY=[['engine','Двигатель','diag'],['gen','Генерато
 const MSG={
   wheel:'Колёса и тормоза — не наш профиль. Мы по электрике и оборудованию.',
   seat:'Сиденья не наш профиль. Нажмите на экран, приборку или дверь.',
-  body:'Кузовом не занимаемся. Нажмите на подсвеченные точки: капот, фары, зеркала, двери, стёкла.',
+  body:'Для кузова — бронирование плёнкой от сколов (в «Услуги и цены»). А здесь нажмите на подсвеченные точки: капот, фары, зеркала, двери, стёкла.',
 };
 
 const CHAPTERS=[
@@ -1240,7 +1265,7 @@ addEventListener('uzi-escape',hideSheet); addEventListener('uzi-form-open',hideS
 /* режим «Рассмотреть машину»: страница стоит, машину крутят во все стороны; выход — крупной кнопкой, Esc или «Назад» */
 /* подсказка-жест: после первого свайпа больше не показываем */
 const storyEl=$('#story'); let hintT;
-const hintOn=on=>{ if(on){ const c=$('.cap.on'); if(c) $('.swipe').style.bottom=(c.offsetHeight-62)+'px'; }   // касание — у верхнего края карточки, ведёт вверх
+const hintOn=on=>{ if(on){ const c=$('.cap.on'), h=c?.querySelector('h1,h2'); if(h) $('.swipe').style.bottom=Math.round(c.offsetHeight-h.offsetTop-h.offsetHeight/2-42)+'px'; }   // касание — на заголовке карточки, ведёт вверх
   document.body.classList.toggle('hint-on',on); };
 function armHint(){ hintOn(false); clearTimeout(hintT); hintT=setTimeout(()=>{   // остановился в 3D-истории — через 12 с напомним свайп
   if(scrollY<storyEl.offsetTop+storyEl.offsetHeight-innerHeight-20&&!document.body.matches('.viewing,.sheet-open,.menu-open')&&!$('#modal').classList.contains('open')) hintOn(true); else armHint(); },12000); }
