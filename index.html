@@ -92,8 +92,45 @@ h1,h2,h3{font-family:var(--f-d);line-height:1.08;letter-spacing:-.015em;text-wra
 .top .btn{padding:12px 20px;font-size:15px}
 @media(max-width:700px){.top .tel{display:none}.mode{margin-left:auto}.top .btn{padding:11px 16px;font-size:14px}.top{padding-inline:16px}}
 
+/* меню */
+.menu{display:flex;gap:2px;margin-left:auto;padding:4px;border-radius:999px;background:var(--glass);border:1px solid var(--glass-line);backdrop-filter:blur(10px)}
+.menu a{padding:9px 15px;border-radius:999px;font-size:14px;font-weight:600;color:var(--text2);white-space:nowrap;transition:color .2s,background .2s}
+.menu a:hover{color:var(--text);background:var(--accent-dim)}
+.menubtn{display:none;margin-left:auto;align-items:center;gap:8px;height:42px;padding:0 16px;border-radius:999px;background:var(--glass);border:1px solid var(--glass-line);backdrop-filter:blur(8px);font-weight:700;font-size:14px;color:var(--text)}
+.menubtn i{display:grid;gap:4px}.menubtn i b{display:block;width:16px;height:2px;border-radius:2px;background:currentColor}
+.top .mode{margin-left:0}
+@media(max-width:860px){
+  .menubtn{display:flex}
+  .menu{position:absolute;top:calc(68px + env(safe-area-inset-top,0px));right:16px;left:16px;flex-direction:column;gap:0;padding:8px;border-radius:20px;background:var(--card);opacity:0;visibility:hidden;transform:translateY(-8px);transition:.25s}
+  .menu a{padding:15px 16px;font-size:16px;color:var(--text);border-radius:14px}
+  .menu a+a{border-top:1px solid var(--line)}
+  body.menu-open .menu{opacity:1;visibility:visible;transform:none}
+}
+/* первый экран: что случилось */
+.quick{margin-top:16px}
+.quick>b{display:block;font-size:14px;font-weight:700;margin-bottom:8px}
+.quick div{display:grid;grid-template-columns:1fr 1fr;gap:8px;max-width:460px}
+.quick button{padding:12px 14px;border-radius:14px;text-align:left;font-weight:600;font-size:15px;background:var(--glass);border:1px solid var(--glass-line);color:var(--text);transition:border-color .2s}
+.quick button:hover{border-color:var(--accent-text)}
+@media(max-width:700px){.cap[data-c="0"]>p{display:none}.quick{margin-top:10px}.quick button{padding:11px 12px;font-size:14px}}
+/* частые вопросы */
+.faq{display:grid;gap:10px;margin-top:28px;max-width:860px}
+.faq details{border:1px solid var(--line);border-radius:18px;background:var(--card);padding:18px 22px}
+.faq summary{cursor:pointer;font-weight:700;font-size:17px;list-style:none;display:flex;justify-content:space-between;gap:16px}
+.faq summary::-webkit-details-marker{display:none}
+.faq summary::after{content:"+";color:var(--accent-text);font-size:22px;line-height:1}
+.faq details[open] summary::after{content:"–"}
+.faq p{margin-top:10px;color:var(--text2);max-width:680px}
+.revnote{margin-top:10px;color:var(--muted);font-size:14px}
+.revnote a{text-decoration:underline}
+/* форма: подробности по желанию */
+.more{margin-bottom:16px}
+.more summary{cursor:pointer;color:var(--accent-text);font-weight:600;font-size:15px;list-style:none}
+.more summary::-webkit-details-marker{display:none}
+.more[open] summary{margin-bottom:14px}
+
 /* ===== ИСТОРИЯ ===== */
-#story{position:relative;height:1000vh}
+#story{position:relative;height:700vh}
 .stage{position:sticky;top:0;height:100vh;height:100lvh;overflow:hidden;
   background:radial-gradient(ellipse 80% 60% at 50% 62%,var(--stage-1) 0%,var(--stage-2) 55%,var(--stage-3) 100%);transition:background .6s}
 #gl{position:absolute;inset:0;width:100%;height:100%;display:block;touch-action:pan-y;outline:none}
@@ -137,7 +174,7 @@ h1,h2,h3{font-family:var(--f-d);line-height:1.08;letter-spacing:-.015em;text-wra
   .facts{font-size:12.5px;margin-top:8px}
   .skip{margin-top:10px;font-size:13px}
   .cap p{font-size:14.5px}
-  .cap:not([data-c="0"]) .row{display:none}
+  .cap:not([data-c="0"]):not([data-c="6"]) .row{display:none}
   .cap .row .btn{flex:1;padding:13px 14px;font-size:15px}
   .cap .row .num{display:none}
   .paints{margin-top:14px}
@@ -356,6 +393,10 @@ setTimeout(function(){ if(!window.__3d) window.no3d(); },12000);
 
 <header class="top">
   <a href="#" class="logo"><i><svg width="22" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12h4l2-6 4 12 3-9 2 3h5"/></svg></i><span>АВТО УЗИ<small>автоэлектрика · Уфа</small></span></a>
+  <button class="menubtn" id="menuBtn" aria-expanded="false" aria-controls="menu"><i><b></b><b></b><b></b></i>Меню</button>
+  <nav class="menu" id="menu" aria-label="Разделы">
+    <a href="#prices-sec">Услуги и цены</a><a href="#faq">Вопросы</a><a href="#reviews-sec">Отзывы</a><a href="#book">Адрес и запись</a>
+  </nav>
   <button class="mode" id="modeBtn" aria-label="Светлая или тёмная тема">
     <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
     <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
@@ -379,6 +420,12 @@ setTimeout(function(){ if(!window.__3d) window.no3d(); },12000);
         <span class="kick">Авто УЗИ · видим машину насквозь</span>
         <h1>Автоэлектрик и диагностика <em>в Уфе</em></h1>
         <p>Не заводится, садится аккумулятор, горит ошибка? Найдём причину и согласуем стоимость до ремонта.</p>
+        <div class="quick"><b>Что случилось с машиной?</b><div>
+          <button data-open="Не заводится" data-svc="power" data-note="Не заводится">Не заводится</button>
+          <button data-open="Горит ошибка" data-svc="diag" data-note="Горит ошибка на панели">Горит ошибка</button>
+          <button data-open="Садится аккумулятор" data-svc="power" data-note="Садится аккумулятор">Садится АКБ</button>
+          <button data-open="Другая проблема" data-svc="other">Другое</button>
+        </div></div>
         <div class="facts"><span><b>★ 4,7</b> 587 оценок</span><span>ул. Софьи Перовской, 13/2А</span><span>ежедневно 10:00–19:00</span></div>
         <div class="row"><button class="btn btn-main" data-open="Запись на диагностику" data-svc="diag">Записаться</button><a class="btn btn-ghost" href="tel:+79174944830" data-goal="click_phone"><span class="num">+7 (917) 494-48-30</span><span class="short">Позвонить</span></a></div>
         <a class="skip" href="#prices-sec" data-goal="skip_3d">Сразу к ценам, отзывам и адресу ↓</a>
@@ -420,11 +467,11 @@ setTimeout(function(){ if(!window.__3d) window.no3d(); },12000);
         <button class="pill" data-open="Установка магнитолы" data-svc="radio">Магнитола — от 1 500 ₽ <span>Записаться →</span></button>
       </div>
       <div class="cap" data-c="6">
-        <span class="kick">Ваша очередь</span>
-        <h2>Покрутите <em>машину</em> — изучите услуги</h2>
-        <p class="d">Тяните машину мышью в любую сторону. Нажимайте на детали — покажем услуги. Капот и водительская дверь открываются.</p>
-        <p class="m">Крутите машину пальцем ↔. Нажмите на капот или водительскую дверь.</p>
-        <div class="row"><button class="btn btn-main" data-open="Запись на диагностику" data-svc="diag">Записаться на диагностику</button></div>
+        <span class="kick">Посмотрите сами</span>
+        <h2>Откройте капот <em>или загляните в салон</em></h2>
+        <p class="d">Нажмите кнопку внизу — покажем, что там проверяем. Хотите покрутить машину — нажмите «Покрутить самому».</p>
+        <p class="m">Нажмите кнопку внизу: «Открыть капот» или «В салон».</p>
+        <div class="row"><button class="btn btn-main" data-open="Запись на диагностику" data-svc="diag">Записаться</button><button class="btn btn-ghost" id="spinBtn" type="button">Покрутить самому ↔</button></div>
       </div>
     </div>
 
@@ -446,19 +493,34 @@ setTimeout(function(){ if(!window.__3d) window.no3d(); },12000);
       <div class="prices" id="prices"></div>
       <div class="big">
         <div class="rv"><b><em>★</em> 4,7</b><span>рейтинг на Яндекс Картах, 587 оценок</span></div>
-        <div class="rv" style="--d:.08s"><b>90<em>%</em></b><span>работ — в день обращения</span></div>
-        <div class="rv" style="--d:.16s"><b>6</b><span>электриков в смене, у каждого свои марки</span></div>
-        <div class="rv" style="--d:.24s"><b>1 <em>год</em></b><span>гарантия на работу</span></div>
+        <div class="rv" style="--d:.08s"><b>13+ <em>лет</em></b><span>занимаемся автоэлектрикой</span></div>
+        <div class="rv" style="--d:.16s"><b>30–60 <em>мин</em></b><span>длится диагностика</span></div>
+        <div class="rv" style="--d:.24s"><b>до 12 <em>мес</em></b><span>гарантия на работы</span></div>
       </div>
     </div>
   </section>
 
-  <section style="padding-top:0">
+  <section style="padding-top:0" id="faq">
+    <div class="wrap">
+      <span class="kick rv">Вопросы</span>
+      <h2 class="rv">Частые вопросы</h2>
+      <div class="faq rv">
+        <details><summary>Сколько стоит и сколько длится диагностика?</summary><p>2 000 ₽, обычно от 30 минут до часа — зависит от машины и того, что проверяем. Цену ремонта называем после диагностики и согласуем до начала работ.</p></details>
+        <details><summary>Есть ли гарантия?</summary><p>Да, от 6 до 12 месяцев на выполненные работы.</p></details>
+        <details><summary>Как оплатить?</summary><p>Наличными или безналичным переводом. Работаем по договору, сроки согласуем до начала работ.</p></details>
+        <details><summary>С какими машинами работаете?</summary><p>С отечественными, японскими, корейскими, китайскими и европейскими авто, с коммерческим транспортом и спецтехникой.</p></details>
+        <details><summary>Ставите сигнализацию под ключ?</summary><p>Да. Подберём систему под машину и бюджет — например, Pandora, — установим и покажем, как пользоваться.</p></details>
+      </div>
+    </div>
+  </section>
+
+  <section style="padding-top:0" id="reviews-sec">
     <div class="wrap">
       <span class="kick rv">Отзывы с Яндекс Карт</span>
       <h2 class="rv">Что говорят клиенты</h2>
       <a class="ya rv" href="https://yandex.ru/maps/org/avto_uzi/1032425488/reviews/" target="_blank" rel="noopener"><b>4,7</b><span><span class="stars">★★★★★</span><small>587 оценок · 305 отзывов</small></span></a>
       <div class="reviews rv" id="reviews"></div>
+      <p class="revnote rv">Отзывы сокращены. Полностью — на <a href="https://yandex.ru/maps/org/avto_uzi/1032425488/reviews/" target="_blank" rel="noopener">Яндекс Картах</a>.</p>
     </div>
   </section>
 
@@ -522,7 +584,7 @@ const PRICE_ORDER = ["diag","power","alarm","radio","rear","cam360","dvr","ac","
 
 const REVIEWS = [
   {n:"Ильшат Ф.",d:"15 марта 2025",t:"В ряде мест сказали, что с сигналкой на Приору большие сложности, и накручивали допы. Тут уточнили модель и сразу назвали срок и цену. Поставили за 2–3 часа, объяснили, как пользоваться, дали гарантию."},
-  {n:"ИльяС",d:"7 февраля 2026",t:"Не открывалась водительская дверь, Элантра 6. Нашли проблему, попутно отремонтировали кнопку брелока. В смене 6 электриков, каждый на своих марках, сразу понимают, куда смотреть. Заняло 1 час."},
+  {n:"ИльяС",d:"7 февраля 2026",t:"Не открывалась водительская дверь, Элантра 6. Нашли проблему, попутно отремонтировали кнопку брелока. Цены не дешёвые, но в смене 6 электриков, каждый на своих марках, — сразу понимают, куда смотреть. Заняло 1 час, цена вопроса 3500 руб."},
   {n:"Blissargon Barju",d:"19 мая 2025",t:"Без проблем ремонтируют всё подряд, диагност просто умничка. Китайские авто можно ремонтировать без страха. Каждый год прохожу у них осмотр радиаторов. Есть заправка фреоном."},
   {n:"Загир Бурангулов",d:"20 июля 2025",t:"Быстро, качественно и профессионально! Ребята — настоящие знатоки своего дела. Отдельный респект электрику Денису!"},
   {n:"Станислав Шевалдин",d:"23 апреля 2026",t:"Небольшой по площади бокс, но работают профессионалы своего дела по части автоэлектрики. Рекомендую."},
@@ -542,6 +604,13 @@ $('#modeBtn').addEventListener('click',()=>{
   window.dispatchEvent(new CustomEvent('uzi-mode',{detail:m})); goal('theme_'+m);
 });
 
+/* меню */
+const menuBtn=$('#menuBtn');
+const setMenu=on=>{ document.body.classList.toggle('menu-open',on); menuBtn.setAttribute('aria-expanded',String(on)); };
+menuBtn.addEventListener('click',e=>{ e.stopPropagation(); setMenu(!document.body.classList.contains('menu-open')); });
+document.addEventListener('click',e=>{ if(document.body.classList.contains('menu-open')&&(e.target.closest('#menu a')||!e.target.closest('#menu'))) setMenu(false); });
+$$('#menu a').forEach(a=>a.addEventListener('click',()=>goal('menu_'+a.getAttribute('href').slice(1))));
+
 /* цены */
 $('#prices').innerHTML = PRICE_ORDER.map((k,i)=>{const s=SVC[k];return `<button class="rv" data-open="${s.t}" data-svc="${k}"><span class="n">${String(i+1).padStart(2,'0')}</span><h3>${s.t}<small>${s.d.split('. ')[0]}.</small></h3><span class="p">${s.p}</span><span class="go">→</span></button>`}).join('');
 
@@ -560,12 +629,14 @@ $('#copyPhone').addEventListener('click',e=>{
 const OPTIONS = PRICE_ORDER.map(k=>[k,SVC[k].t]).concat([['other','Другое']]);
 function formHTML(id,modal){return `${modal?'<button class="x" data-close aria-label="Закрыть">×</button><h3 id="mTitle">Запись</h3><p class="sub">Перезвоним за 15 минут в рабочее время</p>':''}
 <form novalidate data-form="${id}">
+  <div class="row2"><div class="field"><label for="${id}-phone">Телефон *</label><input id="${id}-phone" name="phone" type="tel" inputmode="tel" autocomplete="tel" placeholder="+7 (___) ___-__-__"><div class="hint">Введите номер полностью — 11 цифр</div></div>
+  <div class="field"><label for="${id}-problem">Что случилось</label><select id="${id}-problem" name="problem">${OPTIONS.map(([k,t])=>`<option value="${k}">${t}</option>`).join('')}</select></div></div>
+  <details class="more"><summary>+ Добавить имя, машину и удобное время</summary>
   <div class="row2"><div class="field"><label for="${id}-name">Имя</label><input id="${id}-name" name="name" autocomplete="given-name" placeholder="Как к вам обращаться"></div>
-  <div class="field"><label for="${id}-phone">Телефон *</label><input id="${id}-phone" name="phone" type="tel" inputmode="tel" autocomplete="tel" placeholder="+7 (___) ___-__-__"><div class="hint">Введите номер полностью — 11 цифр</div></div></div>
-  <div class="row2"><div class="field"><label for="${id}-car">Авто</label><input id="${id}-car" name="car" placeholder="Марка, модель, год"></div>
-  <div class="field"><label for="${id}-problem">Что нужно</label><select id="${id}-problem" name="problem">${OPTIONS.map(([k,t])=>`<option value="${k}">${t}</option>`).join('')}</select></div></div>
+  <div class="field"><label for="${id}-car">Авто</label><input id="${id}-car" name="car" placeholder="Марка, модель, год"></div></div>
   <div class="field"><label>Когда удобно</label><div class="slots">${["Сегодня","Завтра","На неделе","Перезвоните"].map((s,i)=>`<label><input type="radio" id="${id}-when-${i}" name="when" value="${s}"${i?'':' checked'}><span>${s}</span></label>`).join('')}</div></div>
   <div class="field"><label for="${id}-comment">Комментарий</label><textarea id="${id}-comment" name="comment" placeholder="Что происходит с машиной"></textarea></div>
+  </details>
   <label class="consent"><input type="checkbox" id="${id}-agree" name="agree" required> <span>Даю согласие на обработку персональных данных в соответствии с <a href="https://avtouzi.ru/politika-konfidentsialnosti/" target="_blank" rel="noopener" style="text-decoration:underline">политикой конфиденциальности</a></span></label>
   <button class="btn btn-main" type="submit">Отправить заявку</button>
   ${LEAD_ENDPOINT?'':'<p class="demo">Демо-версия: форма пока не отправляет заявки. Записаться можно по телефону +7 (917) 494-48-30.</p>'}
@@ -602,10 +673,11 @@ document.addEventListener('submit',async e=>{
 
 /* модалка */
 const modal=$('#modal');
-function openForm(title,svcKey){
-  const mf=$('#modalForm'); mf.classList.remove('sent'); mf.querySelector('form').reset();
+function openForm(title,svcKey,note){
+  const mf=$('#modalForm'); mf.classList.remove('sent'); mf.querySelector('form').reset(); mf.querySelector('.more').open=!!note;
   $('#mTitle').textContent=title;
-  if(svcKey&&SVC[svcKey]) mf.querySelector('select').value=svcKey;
+  if(svcKey&&OPTIONS.some(o=>o[0]===svcKey)) mf.querySelector('select').value=svcKey;
+  if(note) mf.querySelector('[name=comment]').value=note;
   formOpener=document.activeElement; window.dispatchEvent(new Event('uzi-form-open'));
   modal.classList.add('open'); document.body.style.overflow='hidden';
   setTimeout(()=>mf.querySelector('[name=phone]').focus({preventScroll:true}),350);
@@ -614,7 +686,7 @@ function openForm(title,svcKey){
 let formOpener=null;
 const closeForm=()=>{ if(!modal.classList.contains('open')) return; modal.classList.remove('open'); document.body.style.overflow=''; formOpener?.focus?.({preventScroll:true}); };
 document.addEventListener('click',e=>{
-  const o=e.target.closest('[data-open]'); if(o){e.preventDefault();openForm(o.dataset.open,o.dataset.svc);}
+  const o=e.target.closest('[data-open]'); if(o){e.preventDefault();openForm(o.dataset.open,o.dataset.svc,o.dataset.note);}
   if(e.target===modal||e.target.closest('[data-close]')) closeForm();
   const g=e.target.closest('[data-goal]'); if(g) goal(g.dataset.goal);
 });
@@ -702,9 +774,9 @@ function fail(msg){ $('#psub').textContent=msg; window.goal?.('model_error'); se
 /* ---------- сцена ---------- */
 const canvas=$('#gl');
 let renderer;
-try{ renderer=new THREE.WebGLRenderer({canvas,antialias:TIER==='hd',alpha:true,powerPreference:'high-performance'}); }
+try{ renderer=new THREE.WebGLRenderer({canvas,antialias:true,alpha:true,powerPreference:'high-performance'}); }
 catch(e){ fail('Браузер не показывает 3D — листайте ниже, там цены и запись'); throw e; }
-let PR_MAX=TIER==='hd'?Math.min(devicePixelRatio,2):Math.min(devicePixelRatio,1.5), prScale=1;
+let PR_MAX=TIER==='hd'?Math.min(devicePixelRatio,2):Math.min(devicePixelRatio,1.75), prScale=1;
 renderer.setPixelRatio(PR_MAX);
 renderer.toneMapping=THREE.ACESFilmicToneMapping;
 const scene=new THREE.Scene();
@@ -971,7 +1043,8 @@ function setPose(r){
   const asp=camera.aspect, fitK=asp<1.25?THREE.MathUtils.clamp(1.05/asp,1,2.1):1, k=1+(fitK-1)*r.fit;   // телефон: машина крупнее
   /* телефон: сцена в свободной верхней части (снизу подпись и чипы); планшет/квадрат — чуть выше; компьютер — правее подписи */
   if(asp<0.8) camera.setViewOffset(VW,VH,0,VH*(0.17+0.01*Math.max(0,1-p/0.09))+HID/2,VW,VH);   // на первом экране карточка выше — машину поднимаем; HID — часть сцены под панелью браузера
-  else camera.clearViewOffset();   // компьютер/планшет: машина по центру сцены — так Артём одобрил
+  else if(asp>=1.25&&p<0.09) camera.setViewOffset(VW,VH,-VW*0.09*(1-p/0.09),0,VW,VH);   // компьютер, первый экран: чуть правее, чтобы не наезжать на кнопки «Что случилось»
+  else camera.clearViewOffset();   // дальше — по центру сцены, как одобрил Артём
   camera.position.copy(r.tgt).add(tmp.copy(r.pos).sub(r.tgt).multiplyScalar(k));
   camera.lookAt(r.tgt); camera.updateMatrixWorld(true);
   const fov=BASE_FOV+(1-r.fit)*22; if(Math.abs(camera.fov-fov)>0.01){ camera.fov=fov; camera.updateProjectionMatrix(); }
@@ -1007,7 +1080,7 @@ function frame(){
   if(ch!==FREE||free.inside){ const k=Math.pow(0.03,dt); orbit.az*=k; orbit.pol*=k; orbit.vAz=0; orbit.want=null; if(Math.abs(orbit.az)<1e-3) orbit.az=0; if(Math.abs(orbit.pol)<1e-3) orbit.pol=0; }
   else if(!dragging&&orbit.vAz){ orbit.az+=orbit.vAz*dt; orbit.vAz*=Math.pow(0.02,dt); if(Math.abs(orbit.vAz)<0.02) orbit.vAz=0; }
   refreshActive(ch);
-  if(moveEvt){ const e=moveEvt; moveEvt=null; const h=pick(e); hovered=h&&h.hit[1]!=='msg'?h:null; tipFor(hovered,e); canvas.style.cursor=hovered?'pointer':((ch===FREE&&!free.inside)||inCabin()?'grab':''); }   // наведение — не чаще раза в кадр
+  if(moveEvt){ const e=moveEvt; moveEvt=null; const h=pick(e); hovered=h&&h.hit[1]!=='msg'?h:null; tipFor(hovered,e); canvas.style.cursor=hovered?'pointer':((ch===FREE&&!free.inside&&freeSpin)||inCabin()?'grab':''); }   // наведение — не чаще раза в кадр
 
   if(!inCabin()&&!dragging&&(look.yaw||look.pitch)){ const k=Math.pow(0.02,dt); look.yaw*=k; look.pitch*=k; if(Math.abs(look.yaw)<1e-3) look.yaw=0; if(Math.abs(look.pitch)<1e-3) look.pitch=0; }
   const r=poseAt(p); applyFree(r); applyOrbit(r,ch); applyLook(r);
@@ -1133,6 +1206,10 @@ function showSheet(k,partName){
 function hideSheet(){ $('#sheet').classList.remove('on'); document.body.classList.remove('sheet-open'); selectedSpot=null; sheetPart=''; markSelected(); }
 addEventListener('scroll',()=>{ if($('#sheet').classList.contains('on')&&Math.abs(scrollY-sheetY)>28) hideSheet(); },{passive:true});   // начал листать — карточку убираем
 addEventListener('uzi-escape',hideSheet); addEventListener('uzi-form-open',hideSheet);
+let freeSpin=false;   // крутить машину — только если человек сам нажал кнопку
+$('#spinBtn').addEventListener('click',e=>{ freeSpin=!freeSpin; e.currentTarget.textContent=freeSpin?'Готово ✓':'Покрутить самому ↔';
+  if(freeSpin) toast(matchMedia('(pointer:coarse)').matches?'Ведите пальцем по машине влево-вправо':'Тяните машину мышью в любую сторону'); else { orbit.vAz=0; orbit.back=0; }
+  window.goal?.('free_spin'); });
 let toastT; function toast(t){ const el=$('#toast'); el.textContent=t; el.classList.add('on'); clearTimeout(toastT); toastT=setTimeout(()=>el.classList.remove('on'),3000); }
 function doAction(a){
   hideSheet(); dirty=true;
@@ -1174,7 +1251,7 @@ function tipFor(h,e){
   t.style.transform=`translate(${e.clientX-rc.left+16}px,${e.clientY-rc.top+16}px)`; t.classList.add('on');
 }
 let lastY=0, lastMoveT=0, activePointer=null, dragMode=null;
-canvas.addEventListener('pointerdown',e=>{ if(activePointer!==null) return; activePointer=e.pointerId; downX=lastX=e.clientX; downY=lastY=e.clientY; lastMoveT=e.timeStamp; moved=false; dragMode=chapterAt(p)===FREE&&!free.inside?'orbit':inCabin()?'look':null; dragging=!!dragMode; if(dragging) orbit.vAz=0; });
+canvas.addEventListener('pointerdown',e=>{ if(activePointer!==null) return; activePointer=e.pointerId; downX=lastX=e.clientX; downY=lastY=e.clientY; lastMoveT=e.timeStamp; moved=false; dragMode=chapterAt(p)===FREE&&!free.inside&&freeSpin?'orbit':inCabin()?'look':null; dragging=!!dragMode; if(dragging) orbit.vAz=0; });
 addEventListener('pointermove',e=>{
   if(dragging&&e.buttons&&e.pointerId===activePointer){
     const dx=e.clientX-lastX, dy=e.clientY-lastY; lastX=e.clientX; lastY=e.clientY;
